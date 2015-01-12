@@ -1,0 +1,27 @@
+{
+  "name": "zygo-server",
+  "version": "0.1.0",
+  "description": "The server side of the zygo mini-framework.",
+  "main": "build/zygo-server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "zygo",
+    "server",
+    "dual",
+    "render",
+    "isomorphic",
+    "javascript",
+    "react",
+    "jspm"
+  ],
+  "author": "Guy Paterson-Jones",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "gulp": "^3.8.10",
+    "gulp-traceur": "^0.15.0",
+    "mocha": "^2.1.0"
+  }
+}
