@@ -14,24 +14,52 @@ var Config = function Config(configFile) {
 };
 ($traceurRuntime.createClass)(Config, {
   parse: function() {
+    var $__2 = this;
     var baseDir = path.dirname(this.configPath);
-    this.config = this._getJSONFile(this.configPath);
-    this.template = this._getFile(this.config.template, baseDir);
-    var self = this;
-    ['routes', 'clientRoutes', 'serverRoutes'].map(function(route) {
-      self[route] = self._getJSONFile(self.config[route], baseDir);
-    });
+    return this._getFile(this.configPath).then((function(config) {
+      $__2.config = JSON.parse(config);
+      var filePaths = ['template', 'routes', 'clientRoutes', 'serverRoutes'].map((function(name) {
+        return $__2.config[name];
+      }));
+      return $__2._getFiles(filePaths, baseDir);
+    })).then((function(files) {
+      $__2.config.template = files[0];
+      $__2.config.routes = JSON.parse(files[1]);
+      $__2.config.clientRoutes = JSON.parse(files[2]);
+      $__2.config.serverRoutes = JSON.parse(files[3]);
+    }));
   },
-  _getFile: function(file, relativeTo) {
-    if (relativeTo) {
-      try {
-        return fs.readFileSync(path.join(relativeTo, file), "utf-8");
-      } catch (_) {}
-    }
-    return fs.readFileSync(file, "utf-8");
+  _getFile: function(file) {
+    var relativeTo = arguments[1] !== (void 0) ? arguments[1] : '';
+    return new Promise((function(resolve, reject) {
+      fs.readFile(path.join(relativeTo, file), "utf-8", (function(error, data) {
+        if (!error)
+          return resolve(data);
+        fs.readFile(file, "utf-8", (function(error, data) {
+          if (error)
+            return reject(error);
+          else
+            return resolve(data);
+        }));
+      }));
+    }));
   },
-  _getJSONFile: function(file, relativeTo) {
-    return JSON.parse(this._getFile(file, relativeTo));
+  _getFiles: function(files) {
+    var relativeTo = arguments[1] !== (void 0) ? arguments[1] : '';
+    var $__2 = this;
+    return new Promise((function(resolve, reject) {
+      var results = [],
+          finished = 0;
+      files.map((function(file, i) {
+        $__2._getFile(file, relativeTo).then((function(file) {
+          results[i] = file;
+          if (++finished == files.length)
+            return resolve(results);
+        })).catch((function(error) {
+          return reject(error);
+        }));
+      }));
+    }));
   }
 }, {});
 var $__default = Config;

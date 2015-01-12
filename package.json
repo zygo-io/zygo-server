@@ -23,5 +23,10 @@
     "gulp": "^3.8.10",
     "gulp-traceur": "^0.15.0",
     "mocha": "^2.1.0"
+  },
+  "dependencies": {
+    "react": "^0.12.2",
+    "traceur-runtime": "0.0.59",
+    "url-pattern": "^0.6.0"
   }
 }
