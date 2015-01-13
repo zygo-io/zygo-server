@@ -1,13 +1,26 @@
+-----GUY's STUFFF-----
+then(function(trace) {
+      console.log(Object.keys(trace.tree).map(function(name) { return trace.tree[name].deps; }));
+    }).catch(console.log.bind(console));
+
+      //Needs to be called to set Jspm/SystemJS up for module loading.
+  initialise() {
+    return this.config.parse()
+      .then(() => {
+        //Set Jspm up for importing their files
+        let packageDir = path.dirname(this.config.packageJSON || this.config.configPath);
+        jspm.setPackagePath(packageDir);
+        jspm.configureLoader();
+
+        // NB support custom configFile in package.json
+        // just a hack for now
+        return builder.loadConfig(path.resolve(packageDir, 'config.js'))
+          .then(() => builder.config({  baseURL: 'file:' + packageDir }));
+      }).catch(console.log.bind(console));
+  }
+
 The server needs access to the both serialisation functions, so we need to add that into config
 I think... Think more about this.
-
-We have to enforce  that users write their app components with default es6 export.
-That or we need to do a bit of work to get each of them working.
-
-I've decided to pass the loading route into the handler functions rather than through
-state, as otherwise subtle errors are introduced when routes are changed
-mid transition.
-
 CLIENT API
 ---------------
 
