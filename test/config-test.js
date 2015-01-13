@@ -20,8 +20,8 @@ describe("config.js tests", function() {
 
     it("should load template file", function () {
       var template = fs.readFileSync(path.join(__dirname, 'template.hbs'), "utf-8");
-      assert(config.config.template, "config has loaded something into config.template");
-      assert.equal(config.config.template, template,'it is the right something');
+      assert(config.template, "config has loaded something into config.template");
+      assert.equal(config.template, template,'it is the right something');
     });
 
     it("should load route files", function() {
@@ -37,8 +37,8 @@ describe("config.js tests", function() {
       for (key in files) files[key] = JSON.parse(files[key]);
 
       for (key in files) {
-        assert(config.config[key], key + " has had something loaded into it by config");
-        assert.deepEqual(config.config[key], files[key], key + " is loaded by config correctly");
+        assert(config[key], key + " has had something loaded into it by config");
+        assert.deepEqual(config[key], files[key], key + " is loaded by config correctly");
       }
     });
   });

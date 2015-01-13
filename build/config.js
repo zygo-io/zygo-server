@@ -23,10 +23,10 @@ var Config = function Config(configFile) {
       }));
       return $__2._getFiles(filePaths, baseDir);
     })).then((function(files) {
-      $__2.config.template = files[0];
-      $__2.config.routes = JSON.parse(files[1]);
-      $__2.config.clientRoutes = JSON.parse(files[2]);
-      $__2.config.serverRoutes = JSON.parse(files[3]);
+      $__2.template = files[0];
+      $__2.routes = JSON.parse(files[1]);
+      $__2.clientRoutes = JSON.parse(files[2]);
+      $__2.serverRoutes = JSON.parse(files[3]);
     }));
   },
   _getFile: function(file) {

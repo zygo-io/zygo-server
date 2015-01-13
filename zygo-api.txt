@@ -55,7 +55,7 @@ zygo.config, contains the following information:
 Route has a default serialization:
 EXPECTS method: 'GET' by default, unless set to something else
 
-Request headers become route options
+Request headers become headers
 
 only serializes into { route: { path: '/some/path' } }
 

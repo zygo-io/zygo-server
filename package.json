@@ -25,6 +25,7 @@
     "mocha": "^2.1.0"
   },
   "dependencies": {
+    "jspm": "^0.10.4",
     "react": "^0.12.2",
     "traceur-runtime": "0.0.59",
     "url-pattern": "^0.6.0"
