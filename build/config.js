@@ -18,6 +18,7 @@ var Config = function Config(configFile) {
     var baseDir = path.dirname(this.configPath);
     return this._getFile(this.configPath).then((function(config) {
       $__2.config = JSON.parse(config);
+      $__2.packageJSON = $__2.config.packageJSON;
       var filePaths = ['template', 'routes', 'clientRoutes', 'serverRoutes'].map((function(name) {
         return $__2.config[name];
       }));

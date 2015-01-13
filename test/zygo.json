@@ -3,5 +3,7 @@
   "serverRoutes": "routes/serverRoutes.json",
   "clientRoutes": "routes/clientRoutes.json",
   "template": "template.hbs",
-  "port": "80"
+  "port": "80",
+
+  "packageJSON": "/home/guy/github/zygo/package.json"
 }

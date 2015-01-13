@@ -22,13 +22,15 @@ var $TransitionAborted = TransitionAborted;
 var Zygo = function Zygo(configFile) {
   this.currentPath = '';
   this.config = new Config(configFile);
-  var configDir = path.dirname(this.config.configPath);
-  process.chdir(configDir);
-  Jspm.configureLoader();
 };
 ($traceurRuntime.createClass)(Zygo, {
   initialise: function() {
-    return this.config.parse();
+    var $__4 = this;
+    return this.config.parse().then((function() {
+      var packageDir = path.dirname($__4.config.packageJSON || $__4.config.configPath);
+      Jspm.setPackagePath(packageDir);
+      return Jspm.import('lib/zygo-client');
+    }));
   },
   route: function(path, headers, requestType) {},
   renderComponent: function(component) {
