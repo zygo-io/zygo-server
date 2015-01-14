@@ -11,6 +11,7 @@ System.config({
   "map": {
     "css": "github:systemjs/plugin-css@0.1.0",
     "jsx": "github:floatdrop/plugin-jsx@0.1.1",
+    "react": "npm:react@0.12.2",
     "github:floatdrop/plugin-jsx@0.1.1": {
       "react-tools": "npm:react-tools@0.12.2"
     },
@@ -184,6 +185,15 @@ System.config({
       "inherits": "npm:inherits@2.0.1",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
+    "npm:envify@3.2.0": {
+      "jstransform": "npm:jstransform@7.0.0",
+      "process": "github:jspm/nodelibs-process@0.1.0",
+      "through": "npm:through@2.3.6"
+    },
+    "npm:esprima-fb@7001.1.0-dev-harmony-fb": {
+      "fs": "github:jspm/nodelibs-fs@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.0"
+    },
     "npm:esprima-fb@8001.1001.0-dev-harmony-fb": {
       "fs": "github:jspm/nodelibs-fs@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.0"
@@ -237,6 +247,13 @@ System.config({
       "fs": "github:jspm/nodelibs-fs@0.1.0",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.0"
+    },
+    "npm:jstransform@7.0.0": {
+      "base62": "npm:base62@0.1.1",
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "esprima-fb": "npm:esprima-fb@7001.1.0-dev-harmony-fb",
+      "process": "github:jspm/nodelibs-process@0.1.0",
+      "source-map": "npm:source-map@0.1.31"
     },
     "npm:jstransform@8.2.0": {
       "base62": "npm:base62@0.1.1",
@@ -298,6 +315,11 @@ System.config({
       "jstransform": "npm:jstransform@8.2.0",
       "process": "github:jspm/nodelibs-process@0.1.0"
     },
+    "npm:react@0.12.2": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "envify": "npm:envify@3.2.0",
+      "process": "github:jspm/nodelibs-process@0.1.0"
+    },
     "npm:readable-stream@1.1.13": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "core-util-is": "npm:core-util-is@1.0.1",
@@ -352,6 +374,10 @@ System.config({
     "npm:string_decoder@0.10.31": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
     },
+    "npm:through@2.3.6": {
+      "process": "github:jspm/nodelibs-process@0.1.0",
+      "stream": "github:jspm/nodelibs-stream@0.1.0"
+    },
     "npm:url@0.10.2": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "punycode": "npm:punycode@1.3.2",
@@ -367,3 +393,4 @@ System.config({
     }
   }
 });
+

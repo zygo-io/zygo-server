@@ -56,6 +56,15 @@ var Zygo = function Zygo(configFile) {
   _trace: function(moduleName) {
     return builder.trace(moduleName);
   },
+  _cssTrace: function(moduleName) {
+    return this._trace(moduleName).then((function(trace) {
+      return Object.keys(trace.tree).map((function(key) {
+        return trace.tree[key];
+      })).filter((function(leaf) {
+        return !!leaf.name.match('\\.css!');
+      }));
+    }));
+  },
   route: function(path, headers, requestMethod) {
     var $__8 = this;
     return _getRouteObject(path, headers, requestMethod).then((function(loadingRoute) {

@@ -1,32 +1,37 @@
 require('traceur-runtime');
 
-var jspm = require('jspm');
 var Zygo = require('../build/zygo-server').default;
 var assert = require('chai').assert;
 
 describe("zygo-server tests", function() {
   this.timeout(50000);
   var zygo;
-  var trace;
+  var cssTrace;
 
   before(function(done) {
     zygo = new Zygo('test/fake-app/zygo.json');
 
     zygo.initialise()
       .then(function() {
-        return zygo._trace('app/one.jsx!');
+        return zygo._cssTrace('app/one.jsx!');
       })
-      .then(function(_trace) {
-        trace = _trace;
+      .then(function(_cssTrace) {
+        cssTrace = _cssTrace;
       })
       .then(done)
       .catch(console.error.bind(console));
   });
 
-  it("Should work", function() {
-    console.log(trace);
-    // Object.keys(trace.tree).map(function(leaf) {
-    //   console.log(trace.tree[leaf].name);Only file URLs of the form
-    // });
+  describe("_cssTrace()", function() {
+    it("Should have two dependencies in the cssTrace", function() {
+      assert.equal(cssTrace.length, 2);
+    });
+
+    it("Should have the right dependencies in the cssTrace", function() {
+      var deps = {};
+      cssTrace.map(function(css) { deps[css.metadata.pluginArgument] = true; });
+
+      assert(deps['app/one.css'] && deps['app/two.css']);
+    });
   });
 });
