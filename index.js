@@ -1,3 +1,3 @@
 require('traceur-runtime');
 
-module.exports = require('./zygo-server');
+module.exports = require('./build/zygo-server');
