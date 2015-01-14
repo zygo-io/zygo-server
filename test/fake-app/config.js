@@ -133,7 +133,7 @@ System.config({
       "events": "github:jspm/nodelibs-events@0.1.0",
       "fs": "github:jspm/nodelibs-fs@0.1.0",
       "glob": "npm:glob@4.2.2",
-      "graceful-fs": "npm:graceful-fs@3.0.5",
+      "fs": "npm:fs@3.0.5",
       "iconv-lite": "npm:iconv-lite@0.4.6",
       "install": "npm:install@0.1.8",
       "mkdirp": "npm:mkdirp@0.5.0",
@@ -217,7 +217,7 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.0",
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
-    "npm:graceful-fs@3.0.5": {
+    "npm:fs@3.0.5": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "constants": "github:jspm/nodelibs-constants@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.0",
