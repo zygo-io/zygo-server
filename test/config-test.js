@@ -6,11 +6,11 @@ var path = require('path');
 var fs = require('fs');
 
 //It is important for these tests that you run them via `npm test` in the root dir.
-var config = new Config('test/zygo.json');
+var config = new Config('test/fake-app/zygo.json');
 
 describe("config.js tests", function() {
   it("correctly expands package path", function() {
-    assert.equal(config.configPath, path.join(__dirname, 'zygo.json'));
+    assert.equal(config.configPath, path.join(__dirname, 'fake-app/zygo.json'));
   });
 
   describe("parse()", function() {
@@ -19,16 +19,16 @@ describe("config.js tests", function() {
     });
 
     it("should load template file", function () {
-      var template = fs.readFileSync(path.join(__dirname, 'template.hbs'), "utf-8");
+      var template = fs.readFileSync(path.join(__dirname, 'fake-app/template.hbs'), "utf-8");
       assert(config.template, "config has loaded something into config.template");
       assert.equal(config.template, template,'it is the right something');
     });
 
     it("should load route files", function() {
       var files = {
-        routes: 'routes/routes.json',
-        clientRoutes: 'routes/clientRoutes.json',
-        serverRoutes: 'routes/serverRoutes.json'
+        routes: 'fake-app/routes/routes.json',
+        clientRoutes: 'fake-app/routes/clientRoutes.json',
+        serverRoutes: 'fake-app/routes/serverRoutes.json'
       };
 
       var key;

@@ -5,5 +5,5 @@
   "template": "template.hbs",
   "port": "80",
 
-  "packageJSON": "/home/bubblyworld/github/zygo/package.json"
+  "packageJSON": "package.json"
 }
