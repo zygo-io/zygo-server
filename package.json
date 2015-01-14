@@ -25,6 +25,7 @@
     "mocha": "^2.1.0"
   },
   "dependencies": {
+    "events": "^1.0.2",
     "express": "^4.11.0",
     "handlebars": "^2.0.0",
     "jspm": "^0.10.4",
@@ -35,6 +36,7 @@
   },
   "jspm": {
     "dependencies": {
+      "events": "npm:events@^1.0.2",
       "express": "npm:express@^4.11.0",
       "handlebars": "npm:handlebars@^2.0.0",
       "jspm": "npm:jspm@^0.10.4",
