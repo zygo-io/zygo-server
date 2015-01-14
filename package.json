@@ -35,13 +35,13 @@
   },
   "jspm": {
     "dependencies": {
-      "express": "^4.11.0",
-      "handlebars": "^2.0.0",
-      "jspm": "^0.10.4",
-      "react": "^0.12.2",
-      "systemjs-builder": "^0.5.2",
-      "traceur-runtime": "0.0.59",
-      "url-pattern": "^0.6.0"
+      "express": "npm:express@^4.11.0",
+      "handlebars": "npm:handlebars@^2.0.0",
+      "jspm": "npm:jspm@^0.10.4",
+      "react": "npm:react@^0.12.2",
+      "systemjs-builder": "npm:systemjs-builder@^0.5.2",
+      "traceur-runtime": "npm:traceur-runtime@0.0.59",
+      "url-pattern": "npm:url-pattern@^0.6.0"
     }
   }
 }
