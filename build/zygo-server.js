@@ -75,61 +75,64 @@ var Zygo = function Zygo(configFile) {
   },
   route: function(path, headers, requestMethod) {
     var $__8 = this;
-    return _getRouteObject(path, headers, requestMethod).then((function(loadingRoute) {
-      return Render.renderComponent(loadingRoute.component, $__8.state);
-    })).then((function(templateElements) {}));
+    return this._getRouteObject(path, headers, requestMethod).then((function(loadingRoute) {
+      $__8.state.route = loadingRoute;
+      return Render.renderComponent(loadingRoute.component, $__8);
+    })).then((function(templateElements) {
+      var template = Handlebars.compile($__8.config.template);
+      return template(templateElements);
+    }));
   },
   _getRouteObject: function(path) {
     var headers = arguments[1] !== (void 0) ? arguments[1] : {};
     var requestMethod = arguments[2] !== (void 0) ? arguments[2] : "GET";
-    var $__12 = function(routeString) {
-      var pattern = urlPattern.newPattern(routeString);
-      var match = pattern.match(path);
-      if (match) {
-        var handlers = routes[routeString];
-        if (!(handlers instanceof Array))
-          handlers = [handlers];
-        var loadingRoute = {
-          title: undefined,
-          component: undefined,
-          path: path,
-          handlers: handlers,
-          options: match,
-          headers: headers,
-          method: requestMethod
-        };
-        return {v: _runHandlers(loadingRoute).then(function(result) {
-            loadingRoute.title = result.title;
-            loadingRoute.component = result.component;
-            return loadingRoute;
-          })};
-      }
-    },
-        $__13;
+    var $__12 = this,
+        $__13 = function(routeString) {
+          var pattern = urlPattern.newPattern(routeString);
+          var match = pattern.match(path);
+          if (match) {
+            var handlers = $__12.routes[routeString];
+            if (!(handlers instanceof Array))
+              handlers = [handlers];
+            var loadingRoute = {
+              title: undefined,
+              component: undefined,
+              path: path,
+              handlers: handlers,
+              options: match,
+              headers: headers,
+              method: requestMethod
+            };
+            return {v: $__12._runHandlers(loadingRoute).then((function(result) {
+                loadingRoute.title = result.title;
+                loadingRoute.component = result.component;
+                return loadingRoute;
+              }))};
+          }
+        },
+        $__14;
     for (var routeString in this.routes) {
-      $__13 = $__12(routeString);
-      if (typeof $__13 === "object")
-        return $__13.v;
+      $__14 = $__13(routeString);
+      if (typeof $__14 === "object")
+        return $__14.v;
     }
     throw new Error("No matching server-side route for " + path);
   },
   _runHandlers: function(loadingRoute) {
-    return loadingRoute.handlers.reduce(function(handlerChain, nextHandler) {
-      return handlerChain.then(function(result) {
-        var $__8 = this;
+    var $__8 = this;
+    return loadingRoute.handlers.reduce((function(handlerChain, nextHandler) {
+      return handlerChain.then((function(result) {
         return new Promise((function(resolve, reject) {
           if (result && result.redirect)
             return resolve(route(result.redirect));
           if (result && result.component)
             return resolve(result);
-          if ($__8.currentPath !== loadingRoute.path)
-            return reject(new TransitionAborted());
-          return resolve(Jspm.import(nextHandler).then(function(handlerModule) {
-            return handlerModule.default(state, loadingRoute);
-          }));
+          return resolve(jspm.import(nextHandler).then((function(handlerModule) {
+            return handlerModule.default($__8.state, loadingRoute);
+          })));
         }));
-      });
-    }, Promise.resolve());
+      }));
+    }), Promise.resolve());
   }
 }, {}, EventEmitter);
 var $__default = Zygo;

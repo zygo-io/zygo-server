@@ -12,12 +12,8 @@ describe("zygo-server tests", function() {
     zygo = new Zygo('test/fake-app/zygo.json');
 
     zygo.initialise()
-      .then(function() {
-        return zygo._cssTrace('app/one.jsx!');
-      })
-      .then(function(_cssTrace) {
-        cssTrace = _cssTrace;
-      })
+      .then(function() { return zygo._cssTrace('app/one.jsx!'); })
+      .then(function(_cssTrace) { cssTrace = _cssTrace; })
       .then(done)
       .catch(console.error.bind(console));
   });
@@ -32,6 +28,24 @@ describe("zygo-server tests", function() {
       cssTrace.map(function(css) { deps[css] = true; });
 
       assert(deps['app/one.css'] && deps['app/two.css']);
+    });
+  });
+
+  describe("route()", function() {
+    var html;
+
+    before(function(done) {
+      zygo.route('/one')
+        .then(function(_html) { html = _html; })
+        .then(done)
+        .catch(console.error.bind(console));
+    });
+
+    it("renders html correctly", function() {
+      //Heuristic test. ^_^ TODO
+      assert(html.match("_setInitialState"), "set initial state is present in html");
+      assert(html.match("_setRoutes"), "set routes is present in html");
+      assert(html.match("_addLinkHandlers"), "set link handlers state is present in html");
     });
   });
 });

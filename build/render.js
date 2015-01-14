@@ -15,7 +15,8 @@ function renderComponent(component, zygo) {
   var result = {
     zygoBody: null,
     zygoHeader: null,
-    zygoFooter: null
+    zygoFooter: null,
+    zygoTitle: zygo.state.route.title
   };
   return Promise.resolve().then((function() {
     return getBody();
