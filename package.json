@@ -25,7 +25,6 @@
     "mocha": "^2.1.0"
   },
   "dependencies": {
-    "events": "^1.0.2",
     "express": "^4.11.0",
     "handlebars": "^2.0.0",
     "jspm": "^0.10.4",
@@ -44,7 +43,8 @@
       "systemjs-builder": "npm:systemjs-builder@^0.5.2",
       "traceur-runtime": "npm:traceur-runtime@0.0.59",
       "url-pattern": "npm:url-pattern@^0.6.0",
-      "path": "npm:path@^0.11.14"
+      "fs": "github:jspm/nodelibs-fs@0.1.0",
+      "path": "github:jspm/nodelibs-path@0.1.0"
     }
   }
 }
