@@ -31,12 +31,18 @@ var $TransitionAborted = TransitionAborted;
 ($traceurRuntime.createClass)(TransitionAborted, {}, {}, Error);
 var Zygo = function Zygo(configFile) {
   this.currentPath = '';
+  this.state = {route: {}};
   this.config = new Config(configFile);
 };
 ($traceurRuntime.createClass)(Zygo, {
   initialise: function() {
     var $__8 = this;
     return this.config.parse().then((function() {
+      $__8.routes = {};
+      for (var key in $__8.config.routes)
+        $__8.routes[key] = $__8.config.routes[key];
+      for (var key$__11 in $__8.config.serverRoutes)
+        $__8.routes[key$__11] = $__8.config.serverRoutes[key$__11];
       var packageDir = path.dirname($__8.config.configPath);
       if ($__8.config.packageJSON) {
         var possibleDir = path.resolve(packageDir, $__8.config.packageJSON);
@@ -62,6 +68,8 @@ var Zygo = function Zygo(configFile) {
         return trace.tree[key];
       })).filter((function(leaf) {
         return !!leaf.name.match('\\.css!');
+      })).map((function(css) {
+        return css.metadata.pluginArgument;
       }));
     }));
   },
@@ -74,13 +82,7 @@ var Zygo = function Zygo(configFile) {
   _getRouteObject: function(path) {
     var headers = arguments[1] !== (void 0) ? arguments[1] : {};
     var requestMethod = arguments[2] !== (void 0) ? arguments[2] : "GET";
-    var key,
-        routes = {};
-    for (key in config.routes)
-      routes[key] = config.routes[key];
-    for (key in config.serverRoutes)
-      routes[key] = config.serverRoutes[key];
-    var $__11 = function(routeString) {
+    var $__12 = function(routeString) {
       var pattern = urlPattern.newPattern(routeString);
       var match = pattern.match(path);
       if (match) {
@@ -103,11 +105,11 @@ var Zygo = function Zygo(configFile) {
           })};
       }
     },
-        $__12;
-    for (var routeString in routes) {
-      $__12 = $__11(routeString);
-      if (typeof $__12 === "object")
-        return $__12.v;
+        $__13;
+    for (var routeString in this.routes) {
+      $__13 = $__12(routeString);
+      if (typeof $__13 === "object")
+        return $__13.v;
     }
     throw new Error("No matching server-side route for " + path);
   },

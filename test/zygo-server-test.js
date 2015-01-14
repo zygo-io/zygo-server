@@ -29,7 +29,7 @@ describe("zygo-server tests", function() {
 
     it("Should have the right dependencies in the cssTrace", function() {
       var deps = {};
-      cssTrace.map(function(css) { deps[css.metadata.pluginArgument] = true; });
+      cssTrace.map(function(css) { deps[css] = true; });
 
       assert(deps['app/one.css'] && deps['app/two.css']);
     });
