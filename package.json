@@ -2,7 +2,7 @@
   "name": "zygo-server",
   "version": "0.1.0",
   "description": "The server side of the zygo mini-framework.",
-  "main": "build/zygo-server.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha"
   },
@@ -32,5 +32,16 @@
     "systemjs-builder": "^0.5.2",
     "traceur-runtime": "0.0.59",
     "url-pattern": "^0.6.0"
+  },
+  "jspm": {
+    "dependencies": {
+      "express": "^4.11.0",
+      "handlebars": "^2.0.0",
+      "jspm": "^0.10.4",
+      "react": "^0.12.2",
+      "systemjs-builder": "^0.5.2",
+      "traceur-runtime": "0.0.59",
+      "url-pattern": "^0.6.0"
+    }
   }
 }
