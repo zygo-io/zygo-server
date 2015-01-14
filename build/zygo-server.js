@@ -13,6 +13,7 @@ var $__url_45_pattern__,
     $__path__,
     $__fs__,
     $__render__,
+    $__server__,
     $__systemjs_45_builder__;
 var urlPattern = ($__url_45_pattern__ = require("url-pattern"), $__url_45_pattern__ && $__url_45_pattern__.__esModule && $__url_45_pattern__ || {default: $__url_45_pattern__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
@@ -22,6 +23,7 @@ var Handlebars = ($__handlebars__ = require("handlebars"), $__handlebars__ && $_
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
 var Render = ($__render__ = require("./render"), $__render__ && $__render__.__esModule && $__render__ || {default: $__render__});
+var createServer = ($__server__ = require("./server"), $__server__ && $__server__.__esModule && $__server__ || {default: $__server__}).default;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
 var EventEmitter = Events.EventEmitter;
 var TransitionAborted = function TransitionAborted() {
@@ -35,24 +37,24 @@ var Zygo = function Zygo(configFile) {
 };
 ($traceurRuntime.createClass)(Zygo, {
   initialise: function() {
-    var $__8 = this;
+    var $__9 = this;
     return this.config.parse().then((function() {
-      $__8.routes = {};
-      for (var key in $__8.config.routes)
-        $__8.routes[key] = $__8.config.routes[key];
-      for (var key$__11 in $__8.config.serverRoutes)
-        $__8.routes[key$__11] = $__8.config.serverRoutes[key$__11];
-      var packageDir = path.dirname($__8.config.configPath);
-      if ($__8.config.packageJSON) {
-        var possibleDir = path.resolve(packageDir, $__8.config.packageJSON);
+      $__9.routes = {};
+      for (var key in $__9.config.routes)
+        $__9.routes[key] = $__9.config.routes[key];
+      for (var key$__12 in $__9.config.serverRoutes)
+        $__9.routes[key$__12] = $__9.config.serverRoutes[key$__12];
+      var packageDir = path.dirname($__9.config.configPath);
+      if ($__9.config.packageJSON) {
+        var possibleDir = path.resolve(packageDir, $__9.config.packageJSON);
         try {
           if (fs.statSync(possibleDir))
             packageDir = path.dirname(possibleDir);
         } catch (notFound) {
-          packageDir = path.dirname($__8.config.packageDir);
+          packageDir = path.dirname($__9.config.packageDir);
         }
       }
-      $__8.config.packageDir = packageDir;
+      $__9.config.packageDir = packageDir;
       jspm.setPackagePath(packageDir);
       return builder.loadConfig(path.resolve(packageDir, 'config.js')).then((function() {
         return builder.config({baseURL: 'file:' + packageDir});
@@ -73,25 +75,28 @@ var Zygo = function Zygo(configFile) {
       }));
     }));
   },
+  createServer: function() {
+    return server.createServer(this);
+  },
   route: function(path, headers, requestMethod) {
-    var $__8 = this;
+    var $__9 = this;
     return this._getRouteObject(path, headers, requestMethod).then((function(loadingRoute) {
-      $__8.state.route = loadingRoute;
-      return Render.renderComponent(loadingRoute.component, $__8);
+      $__9.state.route = loadingRoute;
+      return Render.renderComponent(loadingRoute.component, $__9);
     })).then((function(templateElements) {
-      var template = Handlebars.compile($__8.config.template);
+      var template = Handlebars.compile($__9.config.template);
       return template(templateElements);
     }));
   },
   _getRouteObject: function(path) {
     var headers = arguments[1] !== (void 0) ? arguments[1] : {};
     var requestMethod = arguments[2] !== (void 0) ? arguments[2] : "GET";
-    var $__12 = this,
-        $__13 = function(routeString) {
+    var $__13 = this,
+        $__14 = function(routeString) {
           var pattern = urlPattern.newPattern(routeString);
           var match = pattern.match(path);
           if (match) {
-            var handlers = $__12.routes[routeString];
+            var handlers = $__13.routes[routeString];
             if (!(handlers instanceof Array))
               handlers = [handlers];
             var loadingRoute = {
@@ -103,23 +108,23 @@ var Zygo = function Zygo(configFile) {
               headers: headers,
               method: requestMethod
             };
-            return {v: $__12._runHandlers(loadingRoute).then((function(result) {
+            return {v: $__13._runHandlers(loadingRoute).then((function(result) {
                 loadingRoute.title = result.title;
                 loadingRoute.component = result.component;
                 return loadingRoute;
               }))};
           }
         },
-        $__14;
+        $__15;
     for (var routeString in this.routes) {
-      $__14 = $__13(routeString);
-      if (typeof $__14 === "object")
-        return $__14.v;
+      $__15 = $__14(routeString);
+      if (typeof $__15 === "object")
+        return $__15.v;
     }
     throw new Error("No matching server-side route for " + path);
   },
   _runHandlers: function(loadingRoute) {
-    var $__8 = this;
+    var $__9 = this;
     return loadingRoute.handlers.reduce((function(handlerChain, nextHandler) {
       return handlerChain.then((function(result) {
         return new Promise((function(resolve, reject) {
@@ -128,7 +133,7 @@ var Zygo = function Zygo(configFile) {
           if (result && result.component)
             return resolve(result);
           return resolve(jspm.import(nextHandler).then((function(handlerModule) {
-            return handlerModule.default($__8.state, loadingRoute);
+            return handlerModule.default($__9.state, loadingRoute);
           })));
         }));
       }));

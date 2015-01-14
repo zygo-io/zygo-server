@@ -2,7 +2,7 @@
   "name": "zygo-server",
   "version": "0.1.0",
   "description": "The server side of the zygo mini-framework.",
-  "main": "build/zygo-server.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha"
   },
