@@ -35,13 +35,13 @@
   },
   "jspm": {
     "dependencies": {
-      "npm:express": "^4.11.0",
-      "npm:handlebars": "^2.0.0",
-      "npm:jspm": "^0.10.4",
-      "npm:react": "^0.12.2",
-      "npm:systemjs-builder": "^0.5.2",
-      "npm:traceur-runtime": "0.0.59",
-      "npm:url-pattern": "^0.6.0"
+      "express": "^4.11.0",
+      "handlebars": "^2.0.0",
+      "jspm": "^0.10.4",
+      "react": "^0.12.2",
+      "systemjs-builder": "^0.5.2",
+      "traceur-runtime": "0.0.59",
+      "url-pattern": "^0.6.0"
     }
   }
 }
