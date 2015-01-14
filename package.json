@@ -25,6 +25,7 @@
     "mocha": "^2.1.0"
   },
   "dependencies": {
+    "express": "^4.11.0",
     "handlebars": "^2.0.0",
     "jspm": "^0.10.4",
     "react": "^0.12.2",

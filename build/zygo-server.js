@@ -30,7 +30,6 @@ var TransitionAborted = function TransitionAborted() {
 var $TransitionAborted = TransitionAborted;
 ($traceurRuntime.createClass)(TransitionAborted, {}, {}, Error);
 var Zygo = function Zygo(configFile) {
-  this.currentPath = '';
   this.state = {route: {}};
   this.config = new Config(configFile);
 };
@@ -53,6 +52,7 @@ var Zygo = function Zygo(configFile) {
           packageDir = path.dirname($__8.config.packageDir);
         }
       }
+      $__8.config.packageDir = packageDir;
       jspm.setPackagePath(packageDir);
       return builder.loadConfig(path.resolve(packageDir, 'config.js')).then((function() {
         return builder.config({baseURL: 'file:' + packageDir});
