@@ -25,7 +25,7 @@ System.config({
       "constants-browserify": "npm:constants-browserify@0.0.1"
     },
     "github:jspm/nodelibs-crypto@0.1.0": {
-      "crypto-browserify": "npm:crypto-browserify@3.9.4"
+      "crypto-browserify": "npm:crypto-browserify@3.9.6"
     },
     "github:jspm/nodelibs-events@0.1.0": {
       "events-browserify": "npm:events-browserify@0.0.1"
@@ -133,7 +133,7 @@ System.config({
       "events": "github:jspm/nodelibs-events@0.1.0",
       "fs": "github:jspm/nodelibs-fs@0.1.0",
       "glob": "npm:glob@4.2.2",
-      "fs": "npm:fs@3.0.5",
+      "graceful-fs": "npm:graceful-fs@3.0.5",
       "iconv-lite": "npm:iconv-lite@0.4.6",
       "install": "npm:install@0.1.8",
       "mkdirp": "npm:mkdirp@0.5.0",
@@ -156,19 +156,19 @@ System.config({
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
       "elliptic": "npm:elliptic@1.0.1"
     },
-    "npm:crypto-browserify@3.9.4": {
+    "npm:crypto-browserify@3.9.6": {
       "browserify-aes": "npm:browserify-aes@0.8.1",
       "browserify-sign": "npm:browserify-sign@2.8.0",
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "create-ecdh": "npm:create-ecdh@1.0.3",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
       "diffie-hellman": "npm:diffie-hellman@2.2.3",
+      "inherits": "npm:inherits@2.0.1",
       "pbkdf2-compat": "npm:pbkdf2-compat@2.0.1",
       "public-encrypt": "npm:public-encrypt@1.1.2",
       "ripemd160": "npm:ripemd160@0.2.0",
-      "sha.js": "npm:sha.js@2.3.4",
-      "stream": "github:jspm/nodelibs-stream@0.1.0",
-      "util": "github:jspm/nodelibs-util@0.1.0"
+      "sha.js": "npm:sha.js@2.3.6",
+      "stream": "github:jspm/nodelibs-stream@0.1.0"
     },
     "npm:diffie-hellman@2.2.3": {
       "bn.js": "npm:bn.js@1.0.0",
@@ -217,7 +217,7 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.0",
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
-    "npm:fs@3.0.5": {
+    "npm:graceful-fs@3.0.5": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "constants": "github:jspm/nodelibs-constants@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.0",
@@ -344,7 +344,7 @@ System.config({
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.0"
     },
-    "npm:sha.js@2.3.4": {
+    "npm:sha.js@2.3.6": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "fs": "github:jspm/nodelibs-fs@0.1.0",
       "inherits": "npm:inherits@2.0.1",
@@ -393,3 +393,4 @@ System.config({
     }
   }
 });
+
