@@ -24,6 +24,10 @@ var Config = function Config(configFile) {
       }));
       if (!filePaths[0])
         filePaths[0] = path.resolve(__dirname, '../defaults/template.hb');
+      [1, 2, 3].map((function(i) {
+        if (!filePaths[i])
+          filePaths[i] = path.resolve(__dirname, '../defaults/route.json');
+      }));
       return $__2._getFiles(filePaths, baseDir);
     })).then((function(files) {
       $__2.template = files[0];
