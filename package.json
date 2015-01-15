@@ -1,6 +1,6 @@
 {
   "name": "zygo-server",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "The server side of the zygo mini-framework.",
   "main": "index.js",
   "scripts": {
