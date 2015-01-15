@@ -1,3 +1,4 @@
 {
-  "/one": "app/one"
+  "/one": "app/one",
+  "default": "app/one"
 }

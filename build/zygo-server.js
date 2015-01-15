@@ -95,37 +95,35 @@ var Zygo = function Zygo(configFile) {
   _getRouteObject: function(path) {
     var headers = arguments[1] !== (void 0) ? arguments[1] : {};
     var requestMethod = arguments[2] !== (void 0) ? arguments[2] : "GET";
-    var $__13 = this,
-        $__14 = function(routeString) {
-          var pattern = urlPattern.newPattern(routeString);
-          var match = pattern.match(path);
-          if (match) {
-            var handlers = $__13.routes[routeString];
-            if (!(handlers instanceof Array))
-              handlers = [handlers];
-            var loadingRoute = {
-              title: undefined,
-              component: undefined,
-              path: path,
-              handlers: handlers,
-              options: match,
-              headers: headers,
-              method: requestMethod
-            };
-            return {v: $__13._runHandlers(loadingRoute).then((function(result) {
-                loadingRoute.title = result.title;
-                loadingRoute.component = result.component;
-                return loadingRoute;
-              }))};
-          }
-        },
-        $__15;
+    var _this = this;
     for (var routeString in this.routes) {
-      $__15 = $__14(routeString);
-      if (typeof $__15 === "object")
-        return $__15.v;
+      var pattern = urlPattern.newPattern(routeString);
+      var match = pattern.match(path);
+      if (match)
+        return _handleMatch(routeString);
     }
+    if (this.routes.default)
+      return _handleMatch('default');
     return Promise.reject(new Error("No matching server-side route for " + path));
+    function _handleMatch(routeString) {
+      var handlers = _this.routes[routeString];
+      if (!(handlers instanceof Array))
+        handlers = [handlers];
+      var loadingRoute = {
+        title: undefined,
+        component: undefined,
+        path: path,
+        handlers: handlers,
+        options: match,
+        headers: headers,
+        method: requestMethod
+      };
+      return _this._runHandlers(loadingRoute).then((function(result) {
+        loadingRoute.title = result.title;
+        loadingRoute.component = result.component;
+        return loadingRoute;
+      }));
+    }
   },
   _runHandlers: function(loadingRoute) {
     var $__9 = this;

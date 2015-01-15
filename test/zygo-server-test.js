@@ -48,4 +48,21 @@ describe("zygo-server tests", function() {
       assert(html.match("_addLinkHandlers"), "set link handlers state is present in html");
     });
   });
+
+  describe("route() with default", function() {
+    var html;
+
+    before(function(done) {
+      zygo.route('/does/not/match/any/route')
+      .then(function(_html) { html = _html; })
+      .then(done)
+      .catch(console.error.bind(console));
+    });
+
+    it("renders html correctly", function() {
+      assert(html.match("_setInitialState"), "set initial state is present in html");
+      assert(html.match("_setRoutes"), "set routes is present in html");
+      assert(html.match("_addLinkHandlers"), "set link handlers state is present in html");
+    });
+  });
 });
