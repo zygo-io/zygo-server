@@ -11,22 +11,20 @@ var Zygo = ($__zygo_45_server__ = require("./zygo-server"), $__zygo_45_server__ 
 var express = ($__express__ = require("express"), $__express__ && $__express__.__esModule && $__express__ || {default: $__express__}).default;
 function createServer(zygo) {
   var app = express();
-  app.use('/', express.static(zygo.config.packageDir));
+  app.use('/', express.static(zygo.baseURL));
   app.use('/', (function(request, response) {
-    try {
-      zygo.route(request.url, request.headers, request.method).then((function(html) {
-        response.writeHead(200, {'Content-Type': 'text/html'});
-        response.write(html);
-        response.end();
-      }));
-    } catch (error) {
+    zygo.route(request.url, request.headers, request.method).then((function(html) {
+      response.writeHead(200, {'Content-Type': 'text/html'});
+      response.write(html);
+      response.end();
+    })).catch((function(error) {
       response.writeHead(500);
       response.write('Internal server error.');
       response.end();
       console.error();
       console.error("Error in server: ");
-      console.error(error);
-    }
+      console.error(error.stack);
+    }));
   }));
   return app;
 }

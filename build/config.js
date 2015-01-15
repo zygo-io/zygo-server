@@ -22,6 +22,8 @@ var Config = function Config(configFile) {
       var filePaths = ['template', 'routes', 'clientRoutes', 'serverRoutes'].map((function(name) {
         return $__2.config[name];
       }));
+      if (!filePaths[0])
+        filePaths[0] = path.resolve(__dirname, '../defaults/template.hb');
       return $__2._getFiles(filePaths, baseDir);
     })).then((function(files) {
       $__2.template = files[0];

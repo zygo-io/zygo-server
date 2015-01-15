@@ -56,8 +56,12 @@ var Zygo = function Zygo(configFile) {
       }
       $__9.config.packageDir = packageDir;
       jspm.setPackagePath(packageDir);
-      return builder.loadConfig(path.resolve(packageDir, 'config.js')).then((function() {
-        return builder.config({baseURL: 'file:' + packageDir});
+      return jspm.configureLoader().then((function(cfg) {
+        return $__9.baseURL = cfg.baseURL.substr(5);
+      })).then((function() {
+        return builder.loadConfig(path.resolve($__9.baseURL, 'config.js'));
+      })).then((function() {
+        return builder.config({baseURL: 'file:' + $__9.baseURL});
       }));
     }));
   },
