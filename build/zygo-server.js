@@ -76,7 +76,7 @@ var Zygo = function Zygo(configFile) {
     }));
   },
   createServer: function() {
-    return server.createServer(this);
+    return createServer(this);
   },
   route: function(path, headers, requestMethod) {
     var $__9 = this;
