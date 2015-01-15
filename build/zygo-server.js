@@ -125,7 +125,7 @@ var Zygo = function Zygo(configFile) {
       if (typeof $__15 === "object")
         return $__15.v;
     }
-    throw new Error("No matching server-side route for " + path);
+    return Promise.reject(new Error("No matching server-side route for " + path));
   },
   _runHandlers: function(loadingRoute) {
     var $__9 = this;
