@@ -80,7 +80,7 @@ var Zygo = function Zygo(configFile) {
     }));
   },
   createServer: function() {
-    return createServer(this);
+    return createServer(this).listen(this.config.port);
   },
   route: function(path, headers, requestMethod) {
     var $__9 = this;
