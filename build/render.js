@@ -55,7 +55,7 @@ function renderComponent(component, zygo) {
     }));
   }
   function getFooter() {
-    var result = '<script>\n' + ' System.import("/zygo").then(function(zygo) {\n' + '   zygo._setInitialState(';
+    var result = '<script>\n' + ' System.import("zygo").then(function(zygo) {\n' + '   zygo._setInitialState(';
     return Promise.resolve().then((function() {
       zygo.emit('serialize');
       result += JSON.stringify(zygo.state);
