@@ -34,7 +34,7 @@ function renderComponent(component, zygo) {
     return result;
   }));
   function getHeader() {
-    var result = '<script src="jspm_packages/system.js"></script>\n' + '<script src="config.js"></script>\n';
+    var result = '<script src="/jspm_packages/system.js"></script>\n' + '<script src="/config.js"></script>\n';
     return Promise.resolve().then((function() {
       return zygo._cssTrace(component);
     })).then((function(trace) {
@@ -55,7 +55,7 @@ function renderComponent(component, zygo) {
     }));
   }
   function getFooter() {
-    var result = '<script>\n' + ' System.import("zygo").then(function(zygo) {\n' + '   zygo._setInitialState(';
+    var result = '<script>\n' + ' System.import("/zygo").then(function(zygo) {\n' + '   zygo._setInitialState(';
     return Promise.resolve().then((function() {
       zygo.emit('serialize');
       result += JSON.stringify(zygo.state);
