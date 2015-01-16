@@ -1,38 +1,22 @@
 # Zygo-Server
 
-Zygo is the beginnings of a slim dual client/server rendering framework built around [JSPM](github.com/jspm/jspm-cli) and [React](github.com/facebook/react). This repo contains the server-side rendering and routing code. It is intended to be run as a server bootstrap for a JSPM app using zygo-client. 
+Zygo is the beginnings of a slim dual client/server rendering framework built around [JSPM](https://www.github.com/jspm/jspm-cli) and [React](https://www.github.com/facebook/react). This repo contains the server-side rendering and routing code. It is intended to be run as a server bootstrap for an app using [JSPM](https://www.github.com/jspm/jspm-cli) and [zygo-client](https://www.github.com/Bubblyworld/zygo).
 
 ## Installation
-To install it in a JSPM project, run:
+To install it as an npm dependency, run:
 ``` bash
-$ jspm install github:bubblyworld/zygo
+$ npm install --save zygo-server
 ```
 
 ## Example Usage
-For a more detailed description of the client API, see the [project wiki](github.com/Bubblyworld/zygo/wiki).
+For a more detailed description of the server API, see the [project wiki](https://www.github.com/Bubblyworld/zygo-server/wiki).  
 For a complete example, see [zygo-example](https://www.github.com/Bubblyworld/zygo-example).
 
 ``` javascript
-import * as zygo from 'zygo';
+import Zygo from 'zygo-server';
 
-//Set the initial state of the application.
-zygo._setInitialState({
-  myState: someValue,
-  meOtherState: someOtherValue
-});
-
-//Set up the routes.
-zygo._setRoutes({
-  '/' : 'handlers/indexHandler',
-  '/about' : 'handlers/aboutHandler',
-  '/post/[:id]' : 'handlers/postHandler',
-
-  '/protected' : ['handlers/auth', 'handlers/secretHandler']
-});
-
-//Link router with anchor tags
-zygo._addLinkHandlers();
-
-//Start the router at the index route
-zygo.route('/');
+let zygo = new Zygo('zygo.json');
+zygo.initialise()
+  .then(() => zygo.createServer())
+  .catch(console.error.bind(console));
 ```
