@@ -57,7 +57,7 @@ var Zygo = function Zygo(configFile) {
       $__9.config.packageDir = packageDir;
       jspm.setPackagePath(packageDir);
       return jspm.configureLoader().then((function(cfg) {
-        return $__9.baseURL = cfg.baseURL.substr(5);
+        return $__9.baseURL = cfg.baseURL.substr('file:'.length);
       })).then((function() {
         return builder.loadConfig(path.resolve($__9.baseURL, 'config.js'));
       })).then((function() {
@@ -69,13 +69,14 @@ var Zygo = function Zygo(configFile) {
     return builder.trace(moduleName);
   },
   _cssTrace: function(moduleName) {
+    var $__9 = this;
     return this._trace(moduleName).then((function(trace) {
-      return Object.keys(trace.tree).map((function(key) {
-        return trace.tree[key];
-      })).filter((function(leaf) {
-        return !!leaf.name.match('\\.css!');
-      })).map((function(css) {
-        return css.metadata.pluginArgument;
+      return Object.keys(builder.loader.loads).map((function(key) {
+        return builder.loader.loads[key].address;
+      })).filter((function(address) {
+        return !!address.match('\\.css$');
+      })).map((function(address) {
+        return address.substr(('file:' + $__9.baseURL).length);
       }));
     }));
   },
