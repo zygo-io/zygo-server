@@ -14,7 +14,7 @@ describe("render.js tests", function() {
 
     zygo.initialise()
       .then(function() {
-        return Render.renderComponent('app/one.jsx!', zygo);
+        return Render.renderRoute({component: 'app/one.jsx!', title: 'blah', path:'/one', state: {}}, zygo);
       })
 
       .then(function(_elements) {
@@ -22,14 +22,14 @@ describe("render.js tests", function() {
       })
 
       .then(done)
-      .catch(console.error.bind(console));
+      .catch(function(error) { console.log(error.stack); });
   });
 
   it("renders header correctly", function() {
-    var header = '<script src="jspm_packages/system.js"></script>\n' +
-                           '<script src="config.js"></script>\n' +
-                           '<link rel="stylesheet" type="text/css" href="app/two.css"></link>\n' +
-                           '<link rel="stylesheet" type="text/css" href="app/one.css"></link>\n';
+    var header = '<script src="/jspm_packages/system.js"></script>\n' +
+                           '<script src="/config.js"></script>\n' +
+                           '<link rel="stylesheet" type="text/css" href="/app/one.css"></link>\n' +
+                           '<link rel="stylesheet" type="text/css" href="/app/two.css"></link>\n';
     assert.equal(elements.zygoHeader, header);
   });
 
