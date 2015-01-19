@@ -110,40 +110,28 @@ var Zygo = function Zygo(configFile) {
       return _handleMatch('default');
     return Promise.reject(new Error("No matching server-side route for " + path));
     function _handleMatch(routeString) {
-      var handlers = _this.routes[routeString];
-      if (!(handlers instanceof Array))
-        handlers = [handlers];
+      var handler = _this.routes[routeString];
       var loadingRoute = {
         state: {},
-        title: undefined,
+        meta: undefined,
         component: undefined,
         path: path,
-        handlers: handlers,
+        handlers: handler,
         options: match,
         headers: headers,
         method: requestMethod
       };
-      return _this._runHandlers(loadingRoute).then((function(result) {
-        loadingRoute.title = result.title;
-        loadingRoute.component = result.component;
+      return jspm.import(handler).then((function(handlerModule) {
+        loadingRoute.component = handlerModule.component;
+        if (handlerModule.handler)
+          return handlerModule.handler(loadingRoute.state, loadingRoute);
+        return {};
+      })).then((function(meta) {
+        return loadingRoute.meta = meta;
+      })).then((function() {
         return loadingRoute;
       }));
     }
-  },
-  _runHandlers: function(loadingRoute) {
-    return loadingRoute.handlers.reduce((function(handlerChain, nextHandler) {
-      return handlerChain.then((function(result) {
-        return new Promise((function(resolve, reject) {
-          if (result && result.redirect)
-            return resolve(route(result.redirect));
-          if (result && result.component)
-            return resolve(result);
-          return resolve(jspm.import(nextHandler).then((function(handlerModule) {
-            return handlerModule.default(loadingRoute.state, loadingRoute);
-          })));
-        }));
-      }));
-    }), Promise.resolve());
   }
 }, {}, EventEmitter);
 var $__default = Zygo;

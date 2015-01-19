@@ -20,6 +20,9 @@ function extractCommonTree(routeTrees) {
     else
       common = routeTrees[key];
   }));
+  Object.keys(routeTrees).map((function(key) {
+    routeTrees[key] = builder.subtractTrees(routeTrees[key], common);
+  }));
   routeTrees.common = common;
   return routeTrees;
 }
@@ -43,8 +46,7 @@ function getRouteTree(route) {
     return jspm.import(handler);
   }))).then((function(handlers) {
     return handlers.map((function(handler) {
-      if (handler.deps)
-        deps = deps.concat(handler.deps);
+      return deps.push(handler.component);
     }));
   })).then((function() {
     return Promise.all(deps.map((function(dep) {

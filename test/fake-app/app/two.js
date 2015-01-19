@@ -1,8 +1,9 @@
-export  default function(state, route) {
+export function handler(state, route) {
   return Promise.resolve().then(() => {
     return {
-      component: 'app/two.jsx!',
       title: 'two'
     };
   });
 }
+
+export var component = 'app/two.jsx!';

@@ -16,7 +16,7 @@ function renderRoute(route, zygo) {
     zygoBody: null,
     zygoHeader: null,
     zygoFooter: null,
-    zygoTitle: route.title
+    zygoMeta: route.meta
   };
   return Promise.resolve().then((function() {
     return getBody();
@@ -59,7 +59,7 @@ function renderRoute(route, zygo) {
     return Promise.resolve().then((function() {
       route.state.route = {
         component: route.component,
-        title: route.title,
+        meta: route.meta,
         path: route.path,
         handlers: route.handlers,
         options: route.match,

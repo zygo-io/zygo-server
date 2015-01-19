@@ -4,7 +4,7 @@
   {{{zygoHeader}}}
 
   <head>
-    <title> {{{zygoTitle}}} </title>
+    <title> {{{zygoMeta.title}}} </title>
   </head>
 
   <body>
