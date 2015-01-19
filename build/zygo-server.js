@@ -32,7 +32,6 @@ var TransitionAborted = function TransitionAborted() {
 var $TransitionAborted = TransitionAborted;
 ($traceurRuntime.createClass)(TransitionAborted, {}, {}, Error);
 var Zygo = function Zygo(configFile) {
-  this.state = {route: {}};
   this.config = new Config(configFile);
 };
 ($traceurRuntime.createClass)(Zygo, {
@@ -86,8 +85,7 @@ var Zygo = function Zygo(configFile) {
   route: function(path, headers, requestMethod) {
     var $__9 = this;
     return this._getRouteObject(path, headers, requestMethod).then((function(loadingRoute) {
-      $__9.state.route = loadingRoute;
-      return Render.renderComponent(loadingRoute.component, $__9);
+      return Render.renderRoute(loadingRoute, $__9);
     })).then((function(templateElements) {
       var template = Handlebars.compile($__9.config.template);
       return template(templateElements);
@@ -111,6 +109,7 @@ var Zygo = function Zygo(configFile) {
       if (!(handlers instanceof Array))
         handlers = [handlers];
       var loadingRoute = {
+        state: {},
         title: undefined,
         component: undefined,
         path: path,
@@ -127,7 +126,6 @@ var Zygo = function Zygo(configFile) {
     }
   },
   _runHandlers: function(loadingRoute) {
-    var $__9 = this;
     return loadingRoute.handlers.reduce((function(handlerChain, nextHandler) {
       return handlerChain.then((function(result) {
         return new Promise((function(resolve, reject) {
@@ -136,7 +134,7 @@ var Zygo = function Zygo(configFile) {
           if (result && result.component)
             return resolve(result);
           return resolve(jspm.import(nextHandler).then((function(handlerModule) {
-            return handlerModule.default($__9.state, loadingRoute);
+            return handlerModule.default(loadingRoute.state, loadingRoute);
           })));
         }));
       }));
