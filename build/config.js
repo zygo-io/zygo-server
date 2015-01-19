@@ -21,6 +21,7 @@ var Config = function Config(configFile) {
       $__2.packageJSON = $__2.config.packageJSON;
       $__2.port = $__2.config.port || 8080;
       $__2.anchors = $__2.config.anchors || true;
+      $__2.buildDir = $__2.config.buildDir;
       var filePaths = ['template', 'routes', 'clientRoutes', 'serverRoutes'].map((function(name) {
         return $__2.config[name];
       }));
