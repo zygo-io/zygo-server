@@ -1,3 +1,6 @@
+Updated the handler api:
+  can export a deps var for bundling because we need to know potential dependencies ahead of time.
+
 -----GUY's STUFFF-----
 then(function(trace) {
       console.log(Object.keys(trace.tree).map(function(name) { return trace.tree[name].deps; }));

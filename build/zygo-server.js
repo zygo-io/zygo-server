@@ -13,6 +13,7 @@ var $__url_45_pattern__,
     $__path__,
     $__fs__,
     $__render__,
+    $__build__,
     $__server__,
     $__systemjs_45_builder__;
 var urlPattern = ($__url_45_pattern__ = require("url-pattern"), $__url_45_pattern__ && $__url_45_pattern__.__esModule && $__url_45_pattern__ || {default: $__url_45_pattern__}).default;
@@ -23,6 +24,7 @@ var Handlebars = ($__handlebars__ = require("handlebars"), $__handlebars__ && $_
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
 var Render = ($__render__ = require("./render"), $__render__ && $__render__.__esModule && $__render__ || {default: $__render__});
+var Build = ($__build__ = require("./build"), $__build__ && $__build__.__esModule && $__build__ || {default: $__build__});
 var createServer = ($__server__ = require("./server"), $__server__ && $__server__.__esModule && $__server__ || {default: $__server__}).default;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
 var EventEmitter = Events.EventEmitter;
@@ -81,6 +83,9 @@ var Zygo = function Zygo(configFile) {
   },
   createServer: function() {
     return createServer(this).listen(this.config.port);
+  },
+  build: function() {
+    return Build.build(this);
   },
   route: function(path, headers, requestMethod) {
     var $__9 = this;

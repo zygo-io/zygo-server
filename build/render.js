@@ -77,7 +77,7 @@ function renderRoute(route, zygo) {
       for (var key$__3 in zygo.config.clientRoutes)
         routes[key$__3] = zygo.config.clientRoutes[key$__3];
       result += JSON.stringify(routes);
-      result += ');\n' + '   zygo._addLinkHandlers();\n' + '   zygo._emit("deserialize", zygo.state);\n' + '   zygo.refresh();\n' + ' });\n' + '</script>';
+      result += ');\n' + (zygo.config.anchors ? '   zygo._addLinkHandlers();\n' : '') + '   zygo._emit("deserialize", zygo.state);\n' + '   zygo.refresh();\n' + ' });\n' + '</script>';
       return result;
     }));
   }
