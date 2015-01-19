@@ -7,22 +7,24 @@ Object.defineProperties(exports, {
 });
 var $__systemjs_45_builder__,
     $__jspm__,
-    $__path__;
+    $__path__,
+    $__sanitize_45_filename__;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
+var sanitize = ($__sanitize_45_filename__ = require("sanitize-filename"), $__sanitize_45_filename__ && $__sanitize_45_filename__.__esModule && $__sanitize_45_filename__ || {default: $__sanitize_45_filename__}).default;
 function build(zygo) {
   return getRouteTrees(zygo.routes).then(extractCommonTree).then((function(trees) {
     return bundleTrees(trees, zygo);
   })).then((function() {
-    return console.log("done");
+    return console.log("Finished build.");
   }));
 }
 function bundleTrees(routeTrees, zygo) {
   if (!zygo.config.buildDir)
     throw new Error("buildDir has not been set in config zygo.json.");
   Object.keys(routeTrees).map((function(key) {
-    builder.buildTree(routeTrees[key], path.resolve(zygo.config.buildDir, key.replace('/', '#')) + '.js');
+    builder.buildTree(routeTrees[key], path.resolve(zygo.config.buildDir, sanitize(key, {replacement: '_'})) + '.js');
   }));
 }
 function extractCommonTree(routeTrees) {
