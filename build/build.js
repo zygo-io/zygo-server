@@ -71,7 +71,7 @@ function bundleTrees(routeTrees, zygo) {
   if (!zygo.config.buildDir)
     throw new Error("buildDir has not been set in config zygo.json.");
   Object.keys(routeTrees).map((function(key) {
-    var modulePath = path.join(zygo.config.buildDir, sanitize(key, {replacement: '_'}));
+    var modulePath = path.join(zygo.config.buildDir, sanitize(key, {replacement: '_'})) + "#HASH";
     var filePath = path.join(zygo.baseURL, modulePath) + '.js';
     builder.buildTree(routeTrees[key], filePath);
     if (!config.loader.bundles)
