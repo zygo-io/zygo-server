@@ -67,7 +67,7 @@ var Zygo = function Zygo(configFile) {
       })).filter((function(address) {
         return !!address.match('\\.css$');
       })).map((function(address) {
-        return address.substr(('file:' + $__8.baseURL).length);
+        return path.relative($__8.baseURL, address.substr('file:'.length));
       }));
     }));
   },
