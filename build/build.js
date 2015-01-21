@@ -8,106 +8,98 @@ Object.defineProperties(exports, {
 var $__systemjs_45_builder__,
     $__jspm__,
     $__path__,
+    $__crypto__,
     $__sanitize_45_filename__,
     $__jspm_47_lib_47_config__;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
+var crypto = ($__crypto__ = require("crypto"), $__crypto__ && $__crypto__.__esModule && $__crypto__ || {default: $__crypto__}).default;
 var sanitize = ($__sanitize_45_filename__ = require("sanitize-filename"), $__sanitize_45_filename__ && $__sanitize_45_filename__.__esModule && $__sanitize_45_filename__ || {default: $__sanitize_45_filename__}).default;
 var config = ($__jspm_47_lib_47_config__ = require("jspm/lib/config"), $__jspm_47_lib_47_config__ && $__jspm_47_lib_47_config__.__esModule && $__jspm_47_lib_47_config__ || {default: $__jspm_47_lib_47_config__}).default;
 function build(zygo) {
+  var optimization = arguments[1] !== (void 0) ? arguments[1] : defaultOptimization;
   return config.load().then((function() {
-    return getRouteTrees(zygo.routes);
-  })).then(extractCommonTree).then(runOptimization).then((function(trees) {
-    return bundleTrees(trees, zygo);
-  })).then((function() {
-    return console.log("Bundling finished, injected bundle info into config.js.");
+    return getRouteBundles(zygo.routes);
+  })).then(optimization).then((function(bundles) {
+    return _build(bundles, zygo);
   }));
 }
-function runOptimization(routeTrees) {
-  var optimizedTrees = optimize(routeTrees);
-  Object.keys(optimizedTrees).map((function(key) {
-    optimizedTrees[key].map((function(module) {
-      Object.keys(routeTrees).map((function(routeKey) {
-        delete routeTrees[routeKey][module];
-      }));
-    }));
-  }));
-  Object.keys(optimizedTrees).map((function(key) {
-    var routeKey = "_optimized_" + key;
-    routeTrees[routeKey] = {};
-    optimizedTrees[key].map((function(module) {
-      routeTrees[routeKey][module] = builder.loader.loads[module];
-    }));
-  }));
-  var moduleCounts = getModuleCounts(routeTrees);
-  Object.keys(moduleCounts).map((function(key) {
-    if (moduleCounts[key] > 1)
-      throw new Error("Optimization does not return disjoint trace trees.");
-  }));
-  return routeTrees;
-}
-function optimize(routeTrees) {
-  var moduleCounts = getModuleCounts(routeTrees);
-  var sharedModules = [];
-  Object.keys(moduleCounts).map((function(key) {
-    if (moduleCounts[key] > 1)
-      sharedModules.push(key);
-  }));
-  return {shared: sharedModules};
-}
-function getModuleCounts(routeTrees) {
-  var modules = {};
-  Object.keys(routeTrees).map((function(key) {
-    Object.keys(routeTrees[key]).map((function(module) {
-      if (!modules[module])
-        modules[module] = 0;
-      modules[module]++;
-    }));
-  }));
-  return modules;
-}
-function bundleTrees(routeTrees, zygo) {
+function _build(bundles, zygo) {
   if (!zygo.config.buildDir)
     throw new Error("buildDir has not been set in config zygo.json.");
   config.loader.bundles = {};
-  Object.keys(routeTrees).map((function(key) {
-    var modulePath = path.join(zygo.config.buildDir, sanitize(key, {replacement: '_'})) + "#HASH";
-    var filePath = path.join(zygo.baseURL, modulePath) + '.js';
-    builder.buildTree(routeTrees[key], filePath);
-    config.loader.bundles[modulePath] = Object.keys(routeTrees[key]).filter((function(moduleName) {
-      return routeTrees[key][moduleName].metadata.build !== false;
+  bundles.map((function(bundle) {
+    var bundleHash = crypto.createHash('md5').update(Object.keys(bundle.modules).toString()).digest('hex');
+    var route = bundle.route ? bundle.route : '';
+    var bundlePath = path.join(zygo.config.buildDir, sanitize(route, {replacement: 'K'}), bundleHash);
+    var filePath = path.join(zygo.baseURL, bundlePath) + '.js';
+    builder.buildTree(bundle.modules, filePath);
+    config.loader.bundles[bundlePath] = Object.keys(bundle.modules).filter((function(module) {
+      return bundle.modules[module].metadata.build !== false;
     }));
   }));
   return config.save();
 }
-function extractCommonTree(routeTrees) {
-  var common;
-  Object.keys(routeTrees).map((function(key) {
-    if (common)
-      common = builder.intersectTrees(common, routeTrees[key]);
-    else
-      common = routeTrees[key];
-  }));
-  Object.keys(routeTrees).map((function(key) {
-    routeTrees[key] = builder.subtractTrees(routeTrees[key], common);
-  }));
-  routeTrees.common = common;
-  return routeTrees;
+function defaultOptimization(bundles) {
+  extractCommon(bundles);
+  extractSharedDep(bundles);
+  return bundles;
 }
-function getRouteTrees(routes) {
-  var routeTrees = {};
+function extractSharedDep(bundles) {
+  var sharedDepBundle = {modules: {}};
+  var moduleCounts = getModuleCounts(bundles);
+  bundles.map((function(bundle) {
+    Object.keys(bundle.modules).map((function(module) {
+      if (moduleCounts[module] > 1) {
+        sharedDepBundle.modules[module] = bundle.modules[module];
+        delete bundle.modules[module];
+      }
+    }));
+  }));
+  bundles.push(sharedDepBundle);
+  return bundles;
+}
+function extractCommon(bundles) {
+  var commonBundle = {};
+  bundles.map((function(bundle) {
+    if (!commonBundle.modules)
+      commonBundle.modules = bundle.modules;
+    commonBundle.modules = builder.intersectTrees(commonBundle.modules, bundle.modules);
+  }));
+  bundles.map((function(bundle) {
+    bundle.modules = builder.subtractTrees(bundle.modules, commonBundle.modules);
+  }));
+  bundles.push(commonBundle);
+  return bundles;
+}
+function getModuleCounts(bundles) {
+  var moduleCounts = {};
+  bundles.map((function(bundle) {
+    Object.keys(bundle.modules).map((function(module) {
+      if (!moduleCounts[module])
+        moduleCounts[module] = 0;
+      moduleCounts[module]++;
+    }));
+  }));
+  return moduleCounts;
+}
+function getRouteBundles(routes) {
+  var routeModules = [];
   return Object.keys(routes).reduce((function(chain, next) {
     return chain.then((function() {
-      return getRouteTree(routes[next]);
+      return getRouteTrace(routes[next]);
     })).then((function(tree) {
-      return routeTrees[next] = tree;
+      return routeModules.push({
+        route: next,
+        modules: tree
+      });
     }));
   }), Promise.resolve()).then((function() {
-    return routeTrees;
+    return routeModules;
   }));
 }
-function getRouteTree(route) {
+function getRouteTrace(route) {
   var deps = [route];
   return jspm.import(route).then((function(handler) {
     return deps.push(handler.component);
