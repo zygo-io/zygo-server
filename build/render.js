@@ -69,7 +69,13 @@ function renderRoute(route, zygo) {
       zygo.emit('serialize', route.state);
       result += JSON.stringify(route.state);
       zygo.emit('deserialize', route.state);
-      result += ');\n' + '   zygo._setRoutes(';
+      result += ');\n';
+      if (zygo.config.environment === 'production') {
+        if (zygo.config.bundlesJSON) {
+          result += 'zygo._setBundles(' + fs.readFileSync(zygo.config.bundlesJSON, 'utf-8') + ');\n';
+        }
+      }
+      result += '   zygo._setRoutes(';
     })).then((function() {
       var routes = {};
       for (var key in zygo.config.routes)
