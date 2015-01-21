@@ -110,18 +110,12 @@ var Zygo = function Zygo(configFile) {
         meta: undefined,
         component: undefined,
         path: path,
-        handlers: handler,
+        handler: handler,
         options: match,
         headers: headers,
         method: requestMethod
       };
-      return jspm.import(handler).then((function(handlerModule) {
-        loadingRoute.component = handlerModule.component;
-        if (handlerModule.handler)
-          return handlerModule.handler(loadingRoute.state, loadingRoute);
-        else
-          return {};
-      })).then((function(meta) {
+      return runHandler(loadingRoute).then((function(meta) {
         if (meta.redirect)
           throw new RouteRedirect(meta.redirect);
         loadingRoute.meta = meta;
@@ -132,4 +126,17 @@ var Zygo = function Zygo(configFile) {
   }
 }, {}, EventEmitter);
 var $__default = Zygo;
+function runHandler(loadingRoute) {
+  return Promise.resolve().then((function() {
+    if (typeof loadingRoute.handler === "object")
+      return loadingRoute.handler;
+    return jspm.import(loadingRoute.handler);
+  })).then((function(handlerModule) {
+    loadingRoute.component = handlerModule.component;
+    if (handlerModule.handler)
+      return handlerModule.handler(loadingRoute.state, loadingRoute);
+    else
+      return handlerModule.meta ? handlerModule.meta : {};
+  }));
+}
 //# sourceURL=zygo-server.js
