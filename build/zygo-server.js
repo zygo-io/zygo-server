@@ -46,16 +46,6 @@ var Zygo = function Zygo(configFile) {
       for (var key$__11 in $__8.config.serverRoutes)
         $__8.routes[key$__11] = $__8.config.serverRoutes[key$__11];
       var packageDir = path.dirname($__8.config.configPath);
-      if ($__8.config.packageJSON) {
-        var possibleDir = path.resolve(packageDir, $__8.config.packageJSON);
-        try {
-          if (fs.statSync(possibleDir))
-            packageDir = path.dirname(possibleDir);
-        } catch (notFound) {
-          packageDir = path.dirname($__8.config.packageDir);
-        }
-      }
-      $__8.config.packageDir = packageDir;
       jspm.setPackagePath(packageDir);
       return jspm.configureLoader().then((function(cfg) {
         return $__8.baseURL = cfg.baseURL.substr('file:'.length);

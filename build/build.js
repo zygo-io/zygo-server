@@ -32,7 +32,7 @@ function _build(bundles, zygo) {
   bundles.map((function(bundle) {
     var bundleHash = crypto.createHash('md5').update(Object.keys(bundle.modules).toString()).digest('hex');
     var route = bundle.route ? bundle.route : '';
-    var bundlePath = path.join(zygo.config.buildDir, sanitize(route, {replacement: 'K'}), bundleHash);
+    var bundlePath = path.join(zygo.config.buildDir, sanitize(route, {replacement: '0'}), bundleHash);
     var filePath = path.join(zygo.baseURL, bundlePath) + '.js';
     builder.buildTree(bundle.modules, filePath);
     config.loader.bundles[bundlePath] = Object.keys(bundle.modules).filter((function(module) {

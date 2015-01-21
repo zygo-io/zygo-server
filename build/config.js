@@ -12,7 +12,10 @@ var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {
 var defaultsDir = path.resolve(__dirname, '../defaults');
 var zygoSpec = {
   buildDir: {},
-  packageJSON: {default: 'package.json'},
+  packageJSON: {
+    type: 'path',
+    default: 'package.json'
+  },
   port: {default: 8080},
   anchors: {default: true},
   template: {
@@ -55,30 +58,49 @@ function parse(configPath) {
       return Promise.resolve().then((function() {
         return result[name] = value;
       }));
+    if (config.type === 'path')
+      return resolvePath(value, baseDir).then((function(path) {
+        return result[name] = path;
+      })).catch(error(name, "problem resolving path: " + value));
     if (config.type === 'file')
-      return getFile(value, baseDir).then((function(data) {
+      return resolvePath(value, baseDir).then(getFile).then((function(data) {
         return result[name] = data;
-      }));
+      })).catch(error(name, "problem loading file: " + value));
     if (config.type === 'json')
-      return getFile(value, baseDir).then((function(data) {
+      return resolvePath(value, baseDir).then(getFile).then((function(data) {
         return JSON.parse(data);
       })).then((function(data) {
         return result[name] = data;
-      }));
+      })).catch(error(name, "problem loading json: " + value));
+  }
+  function error(name, msg) {
+    return (function() {
+      throw new Error("Error loading " + name + " in config - " + msg);
+    });
   }
 }
-function getFile(file) {
-  var relativeTo = arguments[1] !== (void 0) ? arguments[1] : '';
+function resolvePath(url, relativeTo) {
+  var attempt = path.resolve(relativeTo, url);
   return new Promise((function(resolve, reject) {
-    fs.readFile(path.join(relativeTo, file), "utf-8", (function(error, data) {
+    fs.stat(attempt, (function(error) {
       if (!error)
-        return resolve(data);
-      fs.readFile(file, "utf-8", (function(error, data) {
+        return resolve(attempt);
+      attempt = path.resolve(url);
+      fs.stat(attempt, (function(error) {
         if (error)
           return reject(error);
-        else
-          return resolve(data);
+        return resolve(attempt);
       }));
+    }));
+  }));
+}
+function getFile(file) {
+  return new Promise((function(resolve, reject) {
+    fs.readFile(file, "utf-8", (function(error, data) {
+      if (error)
+        return reject(error);
+      else
+        return resolve(data);
     }));
   }));
 }
