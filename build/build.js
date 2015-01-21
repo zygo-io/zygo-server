@@ -70,12 +70,11 @@ function getModuleCounts(routeTrees) {
 function bundleTrees(routeTrees, zygo) {
   if (!zygo.config.buildDir)
     throw new Error("buildDir has not been set in config zygo.json.");
+  config.loader.bundles = {};
   Object.keys(routeTrees).map((function(key) {
     var modulePath = path.join(zygo.config.buildDir, sanitize(key, {replacement: '_'})) + "#HASH";
     var filePath = path.join(zygo.baseURL, modulePath) + '.js';
     builder.buildTree(routeTrees[key], filePath);
-    if (!config.loader.bundles)
-      config.loader.bundles = {};
     config.loader.bundles[modulePath] = Object.keys(routeTrees[key]).filter((function(moduleName) {
       return routeTrees[key][moduleName].metadata.build !== false;
     }));

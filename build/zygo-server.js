@@ -28,11 +28,10 @@ var Build = ($__build__ = require("./build"), $__build__ && $__build__.__esModul
 var createServer = ($__server__ = require("./server"), $__server__ && $__server__.__esModule && $__server__ || {default: $__server__}).default;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
 var EventEmitter = Events.EventEmitter;
-var TransitionAborted = function TransitionAborted() {
-  $traceurRuntime.superConstructor($TransitionAborted).apply(this, arguments);
+var RouteRedirect = function RouteRedirect(redirect) {
+  this.redirect = redirect;
 };
-var $TransitionAborted = TransitionAborted;
-($traceurRuntime.createClass)(TransitionAborted, {}, {}, Error);
+($traceurRuntime.createClass)(RouteRedirect, {}, {}, Error);
 var Zygo = function Zygo(configFile) {
   this.config = new Config(configFile);
 };
@@ -94,6 +93,10 @@ var Zygo = function Zygo(configFile) {
     })).then((function(templateElements) {
       var template = Handlebars.compile($__9.config.template);
       return template(templateElements);
+    })).catch((function(error) {
+      if (error instanceof RouteRedirect)
+        return route(error.redirect, headers, requestMethod);
+      throw error;
     }));
   },
   _getRouteObject: function(path) {
@@ -125,9 +128,12 @@ var Zygo = function Zygo(configFile) {
         loadingRoute.component = handlerModule.component;
         if (handlerModule.handler)
           return handlerModule.handler(loadingRoute.state, loadingRoute);
-        return {};
+        else
+          return {};
       })).then((function(meta) {
-        return loadingRoute.meta = meta;
+        if (meta.redirect)
+          throw new RouteRedirect(meta.redirect);
+        loadingRoute.meta = meta;
       })).then((function() {
         return loadingRoute;
       }));
