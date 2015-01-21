@@ -8,10 +8,10 @@ Object.defineProperties(exports, {
 var $__url_45_pattern__,
     $__jspm__,
     $__events__,
-    $__config__,
     $__handlebars__,
     $__path__,
     $__fs__,
+    $__config__,
     $__render__,
     $__build__,
     $__server__,
@@ -19,10 +19,10 @@ var $__url_45_pattern__,
 var urlPattern = ($__url_45_pattern__ = require("url-pattern"), $__url_45_pattern__ && $__url_45_pattern__.__esModule && $__url_45_pattern__ || {default: $__url_45_pattern__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 var Events = ($__events__ = require("events"), $__events__ && $__events__.__esModule && $__events__ || {default: $__events__}).default;
-var Config = ($__config__ = require("./config"), $__config__ && $__config__.__esModule && $__config__ || {default: $__config__}).default;
 var Handlebars = ($__handlebars__ = require("handlebars"), $__handlebars__ && $__handlebars__.__esModule && $__handlebars__ || {default: $__handlebars__}).default;
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
+var Config = ($__config__ = require("./config"), $__config__ && $__config__.__esModule && $__config__ || {default: $__config__});
 var Render = ($__render__ = require("./render"), $__render__ && $__render__.__esModule && $__render__ || {default: $__render__});
 var Build = ($__build__ = require("./build"), $__build__ && $__build__.__esModule && $__build__ || {default: $__build__});
 var createServer = ($__server__ = require("./server"), $__server__ && $__server__.__esModule && $__server__ || {default: $__server__}).default;
@@ -33,35 +33,36 @@ var RouteRedirect = function RouteRedirect(redirect) {
 };
 ($traceurRuntime.createClass)(RouteRedirect, {}, {}, Error);
 var Zygo = function Zygo(configFile) {
-  this.config = new Config(configFile);
+  this.configFile = configFile;
 };
 ($traceurRuntime.createClass)(Zygo, {
   initialise: function() {
-    var $__9 = this;
-    return this.config.parse().then((function() {
-      $__9.routes = {};
-      for (var key in $__9.config.routes)
-        $__9.routes[key] = $__9.config.routes[key];
-      for (var key$__12 in $__9.config.serverRoutes)
-        $__9.routes[key$__12] = $__9.config.serverRoutes[key$__12];
-      var packageDir = path.dirname($__9.config.configPath);
-      if ($__9.config.packageJSON) {
-        var possibleDir = path.resolve(packageDir, $__9.config.packageJSON);
+    var $__8 = this;
+    return Config.parse(this.configFile).then((function(config) {
+      $__8.config = config;
+      $__8.routes = {};
+      for (var key in $__8.config.routes)
+        $__8.routes[key] = $__8.config.routes[key];
+      for (var key$__11 in $__8.config.serverRoutes)
+        $__8.routes[key$__11] = $__8.config.serverRoutes[key$__11];
+      var packageDir = path.dirname($__8.config.configPath);
+      if ($__8.config.packageJSON) {
+        var possibleDir = path.resolve(packageDir, $__8.config.packageJSON);
         try {
           if (fs.statSync(possibleDir))
             packageDir = path.dirname(possibleDir);
         } catch (notFound) {
-          packageDir = path.dirname($__9.config.packageDir);
+          packageDir = path.dirname($__8.config.packageDir);
         }
       }
-      $__9.config.packageDir = packageDir;
+      $__8.config.packageDir = packageDir;
       jspm.setPackagePath(packageDir);
       return jspm.configureLoader().then((function(cfg) {
-        return $__9.baseURL = cfg.baseURL.substr('file:'.length);
+        return $__8.baseURL = cfg.baseURL.substr('file:'.length);
       })).then((function() {
-        return builder.loadConfig(path.resolve($__9.baseURL, 'config.js'));
+        return builder.loadConfig(path.resolve($__8.baseURL, 'config.js'));
       })).then((function() {
-        return builder.config({baseURL: 'file:' + $__9.baseURL});
+        return builder.config({baseURL: 'file:' + $__8.baseURL});
       }));
     }));
   },
@@ -69,14 +70,14 @@ var Zygo = function Zygo(configFile) {
     return builder.trace(moduleName);
   },
   _cssTrace: function(moduleName) {
-    var $__9 = this;
+    var $__8 = this;
     return this._trace(moduleName).then((function(trace) {
       return Object.keys(builder.loader.loads).map((function(key) {
         return builder.loader.loads[key].address;
       })).filter((function(address) {
         return !!address.match('\\.css$');
       })).map((function(address) {
-        return address.substr(('file:' + $__9.baseURL).length);
+        return address.substr(('file:' + $__8.baseURL).length);
       }));
     }));
   },
@@ -87,11 +88,11 @@ var Zygo = function Zygo(configFile) {
     return Build.build(this);
   },
   route: function(path, headers, requestMethod) {
-    var $__9 = this;
+    var $__8 = this;
     return this._getRouteObject(path, headers, requestMethod).then((function(loadingRoute) {
-      return Render.renderRoute(loadingRoute, $__9);
+      return Render.renderRoute(loadingRoute, $__8);
     })).then((function(templateElements) {
-      var template = Handlebars.compile($__9.config.template);
+      var template = Handlebars.compile($__8.config.template);
       return template(templateElements);
     })).catch((function(error) {
       if (error instanceof RouteRedirect)

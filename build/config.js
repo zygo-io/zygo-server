@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperties(exports, {
-  default: {get: function() {
-      return $__default;
+  parse: {get: function() {
+      return parse;
     }},
   __esModule: {value: true}
 });
@@ -9,68 +9,77 @@ var $__path__,
     $__fs__;
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
-var Config = function Config(configFile) {
-  this.configPath = path.resolve(configFile);
-};
-($traceurRuntime.createClass)(Config, {
-  parse: function() {
-    var $__2 = this;
-    var baseDir = path.dirname(this.configPath);
-    return this._getFile(this.configPath).then((function(config) {
-      $__2.config = JSON.parse(config);
-      $__2.packageJSON = $__2.config.packageJSON;
-      $__2.port = $__2.config.port || 8080;
-      $__2.anchors = $__2.config.anchors || true;
-      $__2.buildDir = $__2.config.buildDir;
-      var filePaths = ['template', 'routes', 'clientRoutes', 'serverRoutes'].map((function(name) {
-        return $__2.config[name];
-      }));
-      if (!filePaths[0])
-        filePaths[0] = path.resolve(__dirname, '../defaults/template.hb');
-      [1, 2, 3].map((function(i) {
-        if (!filePaths[i])
-          filePaths[i] = path.resolve(__dirname, '../defaults/route.json');
-      }));
-      return $__2._getFiles(filePaths, baseDir);
-    })).then((function(files) {
-      $__2.template = files[0];
-      $__2.routes = JSON.parse(files[1]);
-      $__2.clientRoutes = JSON.parse(files[2]);
-      $__2.serverRoutes = JSON.parse(files[3]);
-    }));
+var defaultsDir = path.resolve(__dirname, '../defaults');
+var zygoSpec = {
+  buildDir: {},
+  packageJSON: {default: 'package.json'},
+  port: {default: 8080},
+  anchors: {default: true},
+  template: {
+    type: 'file',
+    default: path.join(defaultsDir, 'template.hb')
   },
-  _getFile: function(file) {
-    var relativeTo = arguments[1] !== (void 0) ? arguments[1] : '';
-    return new Promise((function(resolve, reject) {
-      fs.readFile(path.join(relativeTo, file), "utf-8", (function(error, data) {
-        if (!error)
-          return resolve(data);
-        fs.readFile(file, "utf-8", (function(error, data) {
-          if (error)
-            return reject(error);
-          else
-            return resolve(data);
-        }));
-      }));
-    }));
+  routes: {
+    type: 'json',
+    default: path.join(defaultsDir, 'routes.json')
   },
-  _getFiles: function(files) {
-    var relativeTo = arguments[1] !== (void 0) ? arguments[1] : '';
-    var $__2 = this;
-    return new Promise((function(resolve, reject) {
-      var results = [],
-          finished = 0;
-      files.map((function(file, i) {
-        $__2._getFile(file, relativeTo).then((function(file) {
-          results[i] = file;
-          if (++finished == files.length)
-            return resolve(results);
-        })).catch((function(error) {
-          return reject(error);
-        }));
-      }));
-    }));
+  clientRoutes: {
+    type: 'json',
+    default: path.join(defaultsDir, 'routes.json')
+  },
+  serverRoutes: {
+    type: 'json',
+    default: path.join(defaultsDir, 'routes.json')
   }
-}, {});
-var $__default = Config;
+};
+function parse(configPath) {
+  var spec = arguments[1] !== (void 0) ? arguments[1] : zygoSpec;
+  var baseDir = path.dirname(configPath);
+  var result = {};
+  return getFile(configPath).then((function(data) {
+    return JSON.parse(data);
+  })).then((function(json) {
+    return Promise.all(Object.keys(spec).map((function(key) {
+      return parseConfigObject(key, spec[key], json);
+    })));
+  })).then((function() {
+    return result;
+  }));
+  function parseConfigObject(name, config, json) {
+    var value = json[name] || config.default;
+    if (!value) {
+      if (config.required)
+        throw new Error("Error: config does not contain a value for " + name);
+    }
+    if (!config.type)
+      return Promise.resolve().then((function() {
+        return result[name] = value;
+      }));
+    if (config.type === 'file')
+      return getFile(value, baseDir).then((function(data) {
+        return result[name] = data;
+      }));
+    if (config.type === 'json')
+      return getFile(value, baseDir).then((function(data) {
+        return JSON.parse(data);
+      })).then((function(data) {
+        return result[name] = data;
+      }));
+  }
+}
+function getFile(file) {
+  var relativeTo = arguments[1] !== (void 0) ? arguments[1] : '';
+  return new Promise((function(resolve, reject) {
+    fs.readFile(path.join(relativeTo, file), "utf-8", (function(error, data) {
+      if (!error)
+        return resolve(data);
+      fs.readFile(file, "utf-8", (function(error, data) {
+        if (error)
+          return reject(error);
+        else
+          return resolve(data);
+      }));
+    }));
+  }));
+}
 //# sourceURL=config.js
