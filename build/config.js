@@ -10,7 +10,7 @@ var $__path__,
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
 var defaultsDir = path.resolve(__dirname, '../defaults');
-var zygoSpec = {
+var zygoParseSpec = {
   buildDir: {},
   packageJSON: {
     type: 'path',
@@ -35,49 +35,76 @@ var zygoSpec = {
     default: path.join(defaultsDir, 'routes.json')
   }
 };
+var zygoSaveSpec = {};
 function parse(configPath) {
-  var spec = arguments[1] !== (void 0) ? arguments[1] : zygoSpec;
-  var baseDir = path.dirname(configPath);
+  var spec = arguments[1] !== (void 0) ? arguments[1] : zygoParseSpec;
   var result = {};
-  return getFile(configPath).then((function(data) {
-    return JSON.parse(data);
-  })).then((function(json) {
+  var baseDir;
+  return resolvePath(configPath, process.cwd()).then((function(resolvedPath) {
+    baseDir = path.dirname(resolvedPath);
+    result.path = resolvedPath;
+    return getFile(resolvedPath);
+  })).then(JSON.parse).then((function(json) {
     return Promise.all(Object.keys(spec).map((function(key) {
-      return parseConfigObject(key, spec[key], json);
+      return parseConfigObject(key, spec[key], json, result, baseDir);
     })));
   })).then((function() {
     return result;
   }));
-  function parseConfigObject(name, config, json) {
-    var value = json[name] || config.default;
-    if (!value) {
-      if (config.required)
-        throw new Error("Error: config does not contain a value for " + name);
-    }
-    if (!config.type)
-      return Promise.resolve().then((function() {
-        return result[name] = value;
-      }));
-    if (config.type === 'path')
-      return resolvePath(value, baseDir).then((function(path) {
-        return result[name] = path;
-      })).catch(error(name, "problem resolving path: " + value));
-    if (config.type === 'file')
-      return resolvePath(value, baseDir).then(getFile).then((function(data) {
-        return result[name] = data;
-      })).catch(error(name, "problem loading file: " + value));
-    if (config.type === 'json')
-      return resolvePath(value, baseDir).then(getFile).then((function(data) {
-        return JSON.parse(data);
-      })).then((function(data) {
-        return result[name] = data;
-      })).catch(error(name, "problem loading json: " + value));
+}
+function parseConfigObject(name, config, json, result, baseDir) {
+  var value = json[name] || config.default;
+  if (!value) {
+    if (config.required)
+      throw new Error("Error: config does not contain a value for " + name);
   }
-  function error(name, msg) {
-    return (function() {
-      throw new Error("Error loading " + name + " in config - " + msg);
-    });
-  }
+  if (!config.type)
+    return Promise.resolve().then((function() {
+      return result[name] = value;
+    }));
+  if (config.type === 'path')
+    return resolvePath(value, baseDir).then((function(path) {
+      return result[name] = path;
+    })).catch(error(name, "problem resolving path: " + value));
+  if (config.type === 'file')
+    return resolvePath(value, baseDir).then(getFile).then((function(data) {
+      return result[name] = data;
+    })).catch(error(name, "problem loading file: " + value));
+  if (config.type === 'json')
+    return resolvePath(value, baseDir).then(getFile).then(JSON.parse).then((function(data) {
+      return result[name] = data;
+    })).catch(error(name, "problem loading json: " + value));
+}
+function save(config) {
+  var spec = arguments[1] !== (void 0) ? arguments[1] : zygoSaveSpec;
+  return getFile(config.path).then(JSON.parse).then((function(json) {
+    Object.keys(spec).map((function(key) {
+      if (spec[key].type && spec[key].type === 'json')
+        return;
+      if (spec[key].type && spec[key].type === 'file')
+        return;
+      var value = config[key];
+      if (value) {
+        if (spec[key].type && spec[key].type === 'path')
+          value = path.relative(path.dirname(config.path), value);
+        json[key] = value;
+      }
+    }));
+    return json;
+  })).then((function(json) {
+    return new Promise((function(resolve, reject) {
+      fs.writeFile(config.path, JSON.stringify(json, null, 2), function(error) {
+        if (error)
+          return reject(error);
+        return resolve();
+      });
+    }));
+  }));
+}
+function error(name, msg) {
+  return (function() {
+    throw new Error("Error loading " + name + " in config - " + msg);
+  });
 }
 function resolvePath(url, relativeTo) {
   var attempt = path.resolve(relativeTo, url);
