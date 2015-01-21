@@ -3,6 +3,9 @@ Object.defineProperties(exports, {
   parse: {get: function() {
       return parse;
     }},
+  save: {get: function() {
+      return save;
+    }},
   __esModule: {value: true}
 });
 var $__path__,
@@ -12,6 +15,7 @@ var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {
 var defaultsDir = path.resolve(__dirname, '../defaults');
 var zygoParseSpec = {
   buildDir: {},
+  bundles: {},
   packageJSON: {
     type: 'path',
     default: 'package.json'
@@ -35,7 +39,7 @@ var zygoParseSpec = {
     default: path.join(defaultsDir, 'routes.json')
   }
 };
-var zygoSaveSpec = {};
+var zygoSaveSpec = {bundles: {}};
 function parse(configPath) {
   var spec = arguments[1] !== (void 0) ? arguments[1] : zygoParseSpec;
   var result = {};

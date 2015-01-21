@@ -10,36 +10,35 @@ var $__systemjs_45_builder__,
     $__path__,
     $__crypto__,
     $__sanitize_45_filename__,
-    $__jspm_47_lib_47_config__;
+    $__config__;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var crypto = ($__crypto__ = require("crypto"), $__crypto__ && $__crypto__.__esModule && $__crypto__ || {default: $__crypto__}).default;
 var sanitize = ($__sanitize_45_filename__ = require("sanitize-filename"), $__sanitize_45_filename__ && $__sanitize_45_filename__.__esModule && $__sanitize_45_filename__ || {default: $__sanitize_45_filename__}).default;
-var config = ($__jspm_47_lib_47_config__ = require("jspm/lib/config"), $__jspm_47_lib_47_config__ && $__jspm_47_lib_47_config__.__esModule && $__jspm_47_lib_47_config__ || {default: $__jspm_47_lib_47_config__}).default;
+var Config = ($__config__ = require("./config"), $__config__ && $__config__.__esModule && $__config__ || {default: $__config__});
 function build(zygo) {
   var optimization = arguments[1] !== (void 0) ? arguments[1] : defaultOptimization;
-  return config.load().then((function() {
-    return getRouteBundles(zygo.routes);
-  })).then(optimization).then((function(bundles) {
+  return getRouteBundles(zygo.routes).then(optimization).then((function(bundles) {
     return _build(bundles, zygo);
   }));
 }
 function _build(bundles, zygo) {
   if (!zygo.config.buildDir)
-    throw new Error("buildDir has not been set in config zygo.json.");
-  config.loader.bundles = {};
+    throw new Error("buildDir has not been set in zygo.json.");
+  zygo.config.bundles = {};
   bundles.map((function(bundle) {
     var bundleHash = crypto.createHash('md5').update(Object.keys(bundle.modules).toString()).digest('hex');
     var route = bundle.route ? bundle.route : '';
     var bundlePath = path.join(zygo.config.buildDir, sanitize(route, {replacement: '0'}), bundleHash);
     var filePath = path.join(zygo.baseURL, bundlePath) + '.js';
     builder.buildTree(bundle.modules, filePath);
-    config.loader.bundles[bundlePath] = Object.keys(bundle.modules).filter((function(module) {
-      return bundle.modules[module].metadata.build !== false;
-    }));
+    zygo.config.bundles[bundlePath] = {
+      route: bundle.route,
+      modules: Object.keys(bundle.modules)
+    };
   }));
-  return config.save();
+  return Config.save(zygo.config);
 }
 function defaultOptimization(bundles) {
   extractCommon(bundles);
