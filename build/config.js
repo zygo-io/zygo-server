@@ -14,14 +14,15 @@ var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $_
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
 var defaultsDir = path.resolve(__dirname, '../defaults');
 var zygoParseSpec = {
-  buildDir: {},
-  bundles: {},
+  buildDir: {type: 'path'},
+  bundlesJSON: {type: 'path'},
   packageJSON: {
     type: 'path',
     default: 'package.json'
   },
   port: {default: 8080},
   anchors: {default: true},
+  defaultOptimization: {default: 'tlo'},
   template: {
     type: 'file',
     default: path.join(defaultsDir, 'template.hb')
@@ -39,7 +40,7 @@ var zygoParseSpec = {
     default: path.join(defaultsDir, 'routes.json')
   }
 };
-var zygoSaveSpec = {bundles: {}};
+var zygoSaveSpec = {bundlesJSON: {type: 'path'}};
 function parse(configPath) {
   var spec = arguments[1] !== (void 0) ? arguments[1] : zygoParseSpec;
   var result = {};
@@ -61,6 +62,7 @@ function parseConfigObject(name, config, json, result, baseDir) {
   if (!value) {
     if (config.required)
       throw new Error("Error: config does not contain a value for " + name);
+    return;
   }
   if (!config.type)
     return Promise.resolve().then((function() {
