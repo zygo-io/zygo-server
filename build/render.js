@@ -7,10 +7,12 @@ Object.defineProperties(exports, {
 });
 var $__react__,
     $__jspm__,
-    $__fs__;
+    $__fs__,
+    $__handlebars__;
 var React = ($__react__ = require("react"), $__react__ && $__react__.__esModule && $__react__ || {default: $__react__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
+var Handlebars = ($__handlebars__ = require("handlebars"), $__handlebars__ && $__handlebars__.__esModule && $__handlebars__ || {default: $__handlebars__}).default;
 function renderRoute(route, zygo) {
   var result = {
     zygoBody: null,
@@ -34,28 +36,25 @@ function renderRoute(route, zygo) {
     return result;
   }));
   function getHeader() {
-    var result = '<script src="/jspm_packages/system.js"></script>\n' + '<script src="/config.js"></script>\n';
+    var template = Handlebars.compile(zygo.config.zygoHeader);
     return Promise.resolve().then((function() {
       return zygo._cssTrace(route.component);
-    })).then((function(trace) {
-      trace.map((function(css) {
-        result += '<link rel="stylesheet" type="text/css" href="' + css + '"></link>\n';
-      }));
-    })).then((function() {
-      return result;
+    })).then((function(stylesheets) {
+      return template({stylesheets: stylesheets});
     }));
   }
   function getBody() {
+    var template = Handlebars.compile(zygo.config.zygoBody);
     return Promise.resolve().then((function() {
       return jspm.import(route.component);
     })).then((function(componentModule) {
       var element = React.createElement(componentModule.default, route.state);
       var html = React.renderToString(element);
-      return '<div id="__zygo-body-container__">\n' + html + '\n</div>';
+      return template({html: html});
     }));
   }
   function getFooter() {
-    var result = '<script>\n' + ' System.baseURL = location.href.substr(0, location.href.length - ' + route.path.length + ');\n' + ' System.import("zygo").then(function(zygo) {\n' + '   zygo._setInitialState(';
+    var template = Handlebars.compile(zygo.config.zygoFooter);
     return Promise.resolve().then((function() {
       route.state.route = {
         component: route.component,
@@ -66,25 +65,32 @@ function renderRoute(route, zygo) {
         headers: route.headers,
         method: route.requestMethod
       };
-      zygo.emit('serialize', route.state);
-      result += JSON.stringify(route.state);
-      zygo.emit('deserialize', route.state);
-      result += ');\n';
+      var clientRoutes = {};
+      for (var key in zygo.config.routes)
+        clientRoutes[key] = zygo.config.routes[key];
+      for (var key$__4 in zygo.config.clientRoutes)
+        clientRoutes[key$__4] = zygo.config.clientRoutes[key$__4];
+      var templateObject = {
+        path: route.path,
+        state: JSON.stringify(route.state),
+        routes: JSON.stringify(clientRoutes),
+        addLinkHandlers: zygo.config.anchors
+      };
       if (zygo.config.environment === 'production') {
         if (zygo.config.bundlesJSON) {
-          result += 'zygo._setBundles(' + fs.readFileSync(zygo.config.bundlesJSON, 'utf-8') + ');\n';
+          templateObject.bundles = fs.readFileSync(zygo.config.bundlesJSON, 'utf-8');
+          templateObject.bundleObjects = [];
+          var bundleJSON = JSON.parse(templateObject.bundles);
+          Object.keys(bundleJSON).map((function(key) {
+            if (bundleJSON[key].routes.indexOf(route.path) !== -1)
+              templateObject.bundleObjects.push({
+                bundle: key,
+                modules: bundleJSON[key].modules
+              });
+          }));
         }
       }
-      result += '   zygo._setRoutes(';
-    })).then((function() {
-      var routes = {};
-      for (var key in zygo.config.routes)
-        routes[key] = zygo.config.routes[key];
-      for (var key$__3 in zygo.config.clientRoutes)
-        routes[key$__3] = zygo.config.clientRoutes[key$__3];
-      result += JSON.stringify(routes);
-      result += ');\n' + (zygo.config.anchors ? '   zygo._addLinkHandlers();\n' : '') + '   zygo._emit("deserialize", zygo.state);\n' + '   zygo.refresh();\n' + ' });\n' + '</script>';
-      return result;
+      return template(templateObject);
     }));
   }
 }

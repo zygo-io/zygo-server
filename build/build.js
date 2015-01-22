@@ -89,7 +89,7 @@ function extractSharedDep(bundles) {
       }
     }));
   }));
-  sharedDepBundles.routes = removeDuplicates(sharedDepBundle.routes);
+  sharedDepBundle.routes = removeDuplicates(sharedDepBundle.routes);
   bundles.push(sharedDepBundle);
   return bundles;
 }
