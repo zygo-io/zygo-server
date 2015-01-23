@@ -6,4 +6,6 @@ export function handler(state, route) {
   });
 }
 
-export var component = 'app/one.jsx!';
+export function serialize(context, state) {
+  context.name = 'bob';
+}

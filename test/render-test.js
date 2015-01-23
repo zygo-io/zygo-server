@@ -6,8 +6,8 @@ var assert = require('chai').assert;
 var zygo;
 
 var routes = [
-{component: 'app/two.jsx!'},
-{component: 'app/one.jsx!'}
+{component: 'app/two.jsx!', handler: 'app/one'},
+{component: 'app/one.jsx!', handler: 'app/two'}
 ];
 
 describe("render.js tests", function() {
@@ -35,7 +35,7 @@ describe("render.js tests", function() {
   });
 
   it("renders a given route correctly", function(done) {
-    Render.renderRoutes(routes, [{}, {}])
+    Render.renderRoutes(routes, {context: 'context'})
       .then(function(result) {
         assert(!!result); //result should be non null
         assert(!!result.cssTrace);
@@ -52,12 +52,12 @@ describe("render.js tests", function() {
   });
 
   it("renders a given page correctly", function(done) {
-    Render.renderRoutes(routes, [{},{}])
+    Render.renderRoutes(routes, {context: {name: 'context'}})
       .then(function(result) {
         return Render.renderPage(result, zygo);
       })
       .then(function(result) {
-        console.log(result);
+        console.log("TODO: complete the render.js tests");
         done();
       }).catch(function(error) { console.log(error.stack); });
   });

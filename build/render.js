@@ -68,7 +68,6 @@ function traceCss(modulePath) {
 }
 function renderRoutes(routes, states) {
   routes.reverse();
-  states.reverse();
   var modules = routes.map((function(route) {
     return route.component;
   }));
@@ -79,7 +78,7 @@ function renderRoutes(routes, states) {
     }));
   }))).then((function() {
     return loadedModules.reduce((function(component, next, i) {
-      return React.createElement(next, states[i], component);
+      return React.createElement(next, states[routes[i].path], component);
     }), null);
   })).then((function(component) {
     return _renderComponent(component, modules);
@@ -90,16 +89,15 @@ function renderRoutes(routes, states) {
   }));
 }
 function renderPage(renderObject, zygo) {
-  return runSerialize(renderObject.routes, renderObject.state).then((function() {
+  return runSerialize(renderObject.routes, renderObject.states).then((function() {
     var templateData = {
       cssTrace: normalizeCssTrace(renderObject.cssTrace, zygo),
-      bundles: zygo.config.bundlesJSON ? zygo.config.bundlesJSON : null,
+      bundles: zygo.config.bundlesJSON || null,
       visibleBundles: zygo.config.bundlesJSON ? bundlesVisibleTo(zygo.config.bundlesJSON, renderObject.routes) : null,
       component: renderObject.component,
-      routes: zygo.routes,
-      states: renderObject.states
+      routes: JSON.stringify(zygo.routes),
+      states: JSON.stringify(renderObject.states || {})
     };
-    console.log(zygo.config.template);
     var template = Handlebars.compile(zygo.config.template);
     return template(templateData);
   }));
@@ -109,7 +107,7 @@ function runSerialize(routes, states) {
   return Promise.all(routes.map(getHandler)).then((function() {
     handlers.map((function(handler, i) {
       if (handler && handler.serialize)
-        handler.serialize(states[i]);
+        handler.serialize(states.context, states[routes[i].path]);
     }));
   }));
   function getHandler(route, i) {

@@ -22,7 +22,7 @@
     //System.baseURL = location.href.substr(0, location.href.length - path.length);
 
   System.import("zygo").then(function(zygo) {
-    zygo._setInitialState({{{state}}});
+    zygo._setInitialState({{{states}}});
 
 {{#if bundles}}
     zygo._setBundles({{{bundles}}});
