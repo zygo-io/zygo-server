@@ -45,7 +45,7 @@ var Zygo = function Zygo(configFile) {
         $__8.routes[key] = $__8.config.routes[key];
       for (var key$__11 in $__8.config.serverRoutes)
         $__8.routes[key$__11] = $__8.config.serverRoutes[key$__11];
-      var packageDir = path.dirname($__8.config.configPath);
+      var packageDir = path.dirname($__8.config.packageJSON);
       jspm.setPackagePath(packageDir);
       return jspm.configureLoader().then((function(cfg) {
         return $__8.baseURL = cfg.baseURL.substr('file:'.length);

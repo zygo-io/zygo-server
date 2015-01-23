@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './one.css!';
-import Two from './two.jsx!';
+import './two.css!';
 
 export default React.createClass({
   render: function() {

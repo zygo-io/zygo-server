@@ -2,8 +2,6 @@ require('traceur-runtime');
 
 var Routes = require('../build/routes');
 var assert = require('chai').assert;
-var path = require('path');
-var fs = require('fs');
 
 var routes = {
   component: 'fake',

@@ -15,7 +15,7 @@ var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {
 var defaultsDir = path.resolve(__dirname, '../defaults');
 var zygoParseSpec = {
   buildDir: {type: 'path'},
-  bundlesJSON: {type: 'path'},
+  bundlesJSON: {type: 'json'},
   packageJSON: {
     type: 'path',
     default: 'package.json'

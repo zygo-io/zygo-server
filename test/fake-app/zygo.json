@@ -2,7 +2,6 @@
   "routes": "routes/routes.json",
   "serverRoutes": "routes/serverRoutes.json",
   "clientRoutes": "routes/clientRoutes.json",
-  "template": "template.hbs",
   "port": "80",
 
   "packageJSON": "package.json"
