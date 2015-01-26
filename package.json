@@ -27,6 +27,7 @@
   "dependencies": {
     "handlebars": "^2.0.0",
     "jspm": "^0.10",
+    "mime": "^1.2.11",
     "react": "^0.12.2",
     "systemjs-builder": "^0.5.2",
     "traceur-runtime": "0.0.59",
