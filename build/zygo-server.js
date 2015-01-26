@@ -60,9 +60,14 @@ var Zygo = function Zygo(configFile) {
       if (!match)
         throw new Error("No default or matching route for path: " + path);
       var context = {
-        options: match.options,
-        headers: headers,
-        method: requestMethod
+        meta: {},
+        currentRequest: {
+          routes: match.routes,
+          path: path,
+          options: match.options,
+          headers: headers,
+          method: requestMethod
+        }
       };
       return Routes.runHandlers(match.routes, context);
     })).then((function(states) {

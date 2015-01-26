@@ -19,10 +19,12 @@
   </body>
 
   <script>
-    //System.baseURL = location.href.substr(0, location.href.length - path.length);
+  System.baseURL = location.href.substr(0, location.href.length - {{path.length}});
 
   System.import("zygo").then(function(zygo) {
-    zygo._setInitialState({{{context}}});
+    zygo._setContext({{{context}}});
+    zygo._setRoutes({{{routes}}});
+    zygo._deserializeContext();
 
 {{#if bundles}}
     zygo._setBundles({{{bundles}}});
@@ -35,9 +37,7 @@
     zygo._addLinkHandlers();
 {{/if}}
 
-    zygo._setRoutes({{{routes}}});
-    zygo._emit("deserialize", zygo.state);
-    zygo.refresh();
+    zygo.route('{{path}}', zygo.context.currentRequest.headers);
   });
 </script>
 </html>

@@ -96,7 +96,10 @@ function renderPage(renderObject, zygo) {
       visibleBundles: zygo.config.bundlesJSON ? bundlesVisibleTo(zygo.config.bundlesJSON, renderObject.routes) : null,
       component: renderObject.component,
       routes: JSON.stringify(zygo.config.routes),
-      context: JSON.stringify(renderObject.context || {})
+      context: JSON.stringify(renderObject.context || {}),
+      path: renderObject.context.currentRequest.path,
+      meta: renderObject.context.meta,
+      addLinkHandlers: zygo.config.anchors
     };
     var template = Handlebars.compile(zygo.config.template);
     return template(templateData);

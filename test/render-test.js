@@ -10,6 +10,12 @@ var routes = [
 {component: 'app/one.jsx!', handler: 'app/two'}
 ];
 
+var context = {
+  currentRequest: {
+    path: '/fake/path'
+  }
+};
+
 describe("render.js tests", function() {
   this.timeout(5000);
 
@@ -52,7 +58,7 @@ describe("render.js tests", function() {
   });
 
   it("renders a given page correctly", function(done) {
-    Render.renderRoutes(routes, {context: {name: 'context'}})
+    Render.renderRoutes(routes, context)
       .then(function(result) {
         return Render.renderPage(result, zygo);
       })
