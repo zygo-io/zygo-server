@@ -1,9 +1,7 @@
-export function handler(state, route) {
+export function handler(context) {
   return Promise.resolve().then(() => {
     return {
       title: 'two'
     };
   });
 }
-
-export var component = 'app/two.jsx!';

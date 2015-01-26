@@ -1,5 +1,6 @@
-export function handler(state, route) {
+export function handler(context) {
   return Promise.resolve().then(() => {
+    context.thing = 'forty two';
     return {
       title: 'one'
     };
