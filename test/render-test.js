@@ -15,7 +15,7 @@ describe("render.js tests", function() {
 
   before(function(done) {
     zygo = new Zygo('test/fake-app/zygo.json');
-    zygo.initialise().then(done).catch(console.log.bind(console));
+    zygo.initialize().then(done).catch(console.log.bind(console));
   });
 
   it("renders a given component module correctly", function(done) {

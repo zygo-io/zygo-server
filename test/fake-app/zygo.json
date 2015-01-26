@@ -1,8 +1,6 @@
 {
   "routes": "routes/routes.json",
-  "serverRoutes": "routes/serverRoutes.json",
-  "clientRoutes": "routes/clientRoutes.json",
-  "port": "80",
+  "port": "8080",
 
   "packageJSON": "package.json"
 }

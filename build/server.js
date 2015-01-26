@@ -1,32 +1,58 @@
 "use strict";
 Object.defineProperties(exports, {
-  default: {get: function() {
-      return $__default;
+  createServer: {get: function() {
+      return createServer;
     }},
   __esModule: {value: true}
 });
-var $__zygo_45_server__,
-    $__express__;
-var Zygo = ($__zygo_45_server__ = require("./zygo-server"), $__zygo_45_server__ && $__zygo_45_server__.__esModule && $__zygo_45_server__ || {default: $__zygo_45_server__}).default;
-var express = ($__express__ = require("express"), $__express__ && $__express__.__esModule && $__express__ || {default: $__express__}).default;
+var $__http__,
+    $__path__,
+    $__fs__;
+var http = ($__http__ = require("http"), $__http__ && $__http__.__esModule && $__http__ || {default: $__http__}).default;
+var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
+var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
 function createServer(zygo) {
-  var app = express();
-  app.use('/', express.static(zygo.baseURL));
-  app.use('/', (function(request, response) {
-    zygo.route(request.url, request.headers, request.method).then((function(html) {
-      response.writeHead(200, {'Content-Type': 'text/html'});
-      response.write(html);
-      response.end();
-    })).catch((function(error) {
-      response.writeHead(500);
-      response.write('Internal server error.');
-      response.end();
-      console.error();
-      console.error("Error in server: ");
-      console.error(error.stack);
-    }));
-  }));
-  return app;
+  var server = http.createServer();
+  server._zygo = zygo;
+  server._zygowares = [serveStatic.bind(server), serveRoutes.bind(server)];
+  server._middlewares = [];
+  server.use = addMiddleware.bind(server);
+  server.on('request', handleRequest.bind(server));
+  return server;
 }
-var $__default = createServer;
+function serveStatic(req, res, next) {
+  var staticPath = path.join(this._zygo.baseURL, req.url);
+  fs.readFile(staticPath, 'utf-8', (function(error, data) {
+    if (error)
+      return next();
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.write(data);
+    res.end();
+  }));
+}
+function serveRoutes(req, res, next) {
+  this._zygo.route(req.url, req.headers, req.method).then((function(html) {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.write(html);
+    res.end();
+  })).catch((function(error) {
+    console.log("Error routing " + req.url + " : " + error.stack);
+    res.writeHead(404, {'Content-Type': 'text/plain'});
+    res.write("404 not found");
+    res.end();
+  }));
+}
+function handleRequest(req, res) {
+  var handlers = this._middlewares.concat(this._zygowares);
+  handlers[0](req, res, next(0));
+  function next(index) {
+    return (function() {
+      if (index < handlers.length - 1)
+        handlers[index + 1](req, res, next(index + 1));
+    });
+  }
+}
+function addMiddleware(requestHandler) {
+  this._middlewares.push(requestHandler);
+}
 //# sourceURL=server.js

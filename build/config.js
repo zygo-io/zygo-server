@@ -32,14 +32,6 @@ var zygoParseSpec = {
     type: 'json',
     default: path.join(defaultsDir, 'routes.json')
   },
-  clientRoutes: {
-    type: 'json',
-    default: path.join(defaultsDir, 'routes.json')
-  },
-  serverRoutes: {
-    type: 'json',
-    default: path.join(defaultsDir, 'routes.json')
-  },
   zygoHeader: {
     type: 'file',
     default: path.join(defaultsDir, 'zygoHeader.hb')

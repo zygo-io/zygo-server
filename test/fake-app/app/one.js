@@ -7,6 +7,6 @@ export function handler(context) {
   });
 }
 
-export function serialize(context, state) {
+export function serialize(context) {
   context.name = 'bob';
 }

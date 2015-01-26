@@ -1,4 +1,13 @@
 {
-  "/one": "app/one",
-  "default": "app/one"
+  "component": "app/page.jsx!",
+
+  "/one": {
+    "handler": "app/one",
+    "component": "app/one.jsx!"
+  },
+
+  "/two": {
+    "handler": "app/two",
+    "component": "app/two.jsx!"
+  }
 }

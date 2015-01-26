@@ -41,15 +41,15 @@ describe("routes.js tests", function() {
   this.timeout(50000);
 
   before(function(done) {
-    new Zygo('test/fake-app/zygo.json').initialise()
+    new Zygo('test/fake-app/zygo.json').initialize()
       .then(done).catch(console.log.bind(console));
   });
 
   it("runs handlers correctly", function(done) {
     Routes.runHandlers(appRoutes)
       .then(function(result) {
-        assert(!!result && result.context && result.context.thing);
-        assert.equal(result.context.thing, 'forty two');
+        assert(!!result && result.thing);
+        assert.equal(result.thing, 'forty two');
         done();
       }).catch(console.log.bind(console));
   });

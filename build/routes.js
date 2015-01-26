@@ -53,17 +53,15 @@ function _match(path, curPattern, curRoute) {
   return match;
 }
 function runHandlers(routes) {
-  var result = {context: {}};
+  var context = arguments[1] !== (void 0) ? arguments[1] : {};
   return routes.reduce((function(chain, route) {
     return chain.then((function() {
       return route.handler ? jspm.import(route.handler) : null;
     })).then((function(module) {
-      return module ? module.handler(result.context) : {};
-    })).then((function(state) {
-      return result[route.path] = state;
+      return module ? module.handler(context) : null;
     }));
   }), Promise.resolve()).then((function() {
-    return result;
+    return context;
   }));
 }
 //# sourceURL=routes.js

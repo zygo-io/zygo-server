@@ -7,7 +7,7 @@ then(function(trace) {
     }).catch(console.log.bind(console));
 
       //Needs to be called to set Jspm/SystemJS up for module loading.
-  initialise() {
+  initialize() {
     return this.config.parse()
       .then(() => {
         //Set Jspm up for importing their files

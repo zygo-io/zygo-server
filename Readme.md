@@ -18,7 +18,7 @@ For a complete example, see [Zygo-Example](https://www.github.com/Bubblyworld/zy
 import Zygo from 'zygo-server';
 
 let zygo = new Zygo('zygo.json');
-zygo.initialise()
+zygo.initialize()
   .then(() => zygo.createServer())
   .catch(console.error.bind(console));
 ```
