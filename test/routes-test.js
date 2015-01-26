@@ -59,11 +59,6 @@ describe("routes.js tests", function() {
     assert(!!result); //result should be non null
   });
 
-  it("only matches the leaf routes, not partial routes", function() {
-    var result = Routes.match('/user', fakeRoutes);
-    assert(!result); //result should be null
-  });
-
   it("matches dynamic option routes", function() {
     var result = Routes.match('/post/45', fakeRoutes);
     assert(!!result); //result should be non null

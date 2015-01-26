@@ -54,8 +54,9 @@ var Zygo = function Zygo(configFile) {
   },
   route: function(path, headers, requestMethod) {
     var $__5 = this;
+    var match;
     return Promise.resolve().then((function() {
-      var match = Routes.match(path, $__5.config.routes);
+      match = Routes.match(path, $__5.config.routes);
       if (!match)
         throw new Error("No default or matching route for path: " + path);
       var context = {

@@ -32,15 +32,11 @@ function _match(path, curPattern, curRoute) {
     else
       otherParams[key] = curRoute[key];
   }));
-  if (Object.keys(childRoutes).length === 0) {
-    var match$__2 = pattern.newPattern(curPattern).match(path);
-    if (match$__2 !== null) {
-      otherParams.options = match$__2;
-      return [otherParams];
-    } else
-      return null;
+  var match = pattern.newPattern(curPattern).match(path);
+  if (match !== null) {
+    otherParams.options = match;
+    return [otherParams];
   }
-  var match = null;
   if (pattern.newPattern(curPattern + '(.*)').match(path)) {
     Object.keys(childRoutes).map((function(key) {
       var result = _match(path, curPattern + key, childRoutes[key]);
