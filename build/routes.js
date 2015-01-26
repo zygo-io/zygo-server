@@ -32,7 +32,7 @@ function _match(path, curPattern, curRoute) {
     else
       otherParams[key] = curRoute[key];
   }));
-  var match = pattern.newPattern(curPattern).match(path);
+  var match = pattern.newPattern(curPattern || '/').match(path);
   if (match !== null) {
     otherParams.options = match;
     return [otherParams];
