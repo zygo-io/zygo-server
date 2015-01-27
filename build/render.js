@@ -68,9 +68,6 @@ function traceCss(modulePath) {
 }
 function renderRoutes(routes, context) {
   routes.reverse();
-  var modules = routes.map((function(route) {
-    return route.component;
-  }));
   var loadedModules = [];
   return Promise.all(routes.map((function(route) {
     return route.component;
@@ -92,6 +89,7 @@ function renderRoutes(routes, context) {
     })).filter((function(module) {
       return !!module;
     }));
+    routes.reverse();
     return _renderComponent(component, modules);
   })).then((function(renderObject) {
     renderObject.context = context;
