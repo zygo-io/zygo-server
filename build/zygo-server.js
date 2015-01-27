@@ -52,6 +52,9 @@ var Zygo = function Zygo(configFile) {
   createServer: function() {
     return Server.createServer(this).listen(this.config.port);
   },
+  build: function() {
+    return Build.build(this);
+  },
   route: function(path, headers, requestMethod) {
     var $__5 = this;
     var match;
@@ -70,8 +73,8 @@ var Zygo = function Zygo(configFile) {
         }
       };
       return Routes.runHandlers(match.routes, context);
-    })).then((function(states) {
-      return Render.renderRoutes(match.routes, states);
+    })).then((function(context) {
+      return Render.renderRoutes(match.routes, context);
     })).then((function(renderObject) {
       return Render.renderPage(renderObject, $__5);
     }));

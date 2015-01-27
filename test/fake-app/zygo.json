@@ -1,6 +1,6 @@
 {
   "routes": "routes/routes.json",
   "port": "8080",
-
-  "packageJSON": "package.json"
+  "buildDir": "build",
+  "bundlesJSON": "build/bundles.json"
 }
