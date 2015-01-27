@@ -44,7 +44,7 @@ function _build(bundles, zygo) {
       if (error)
         return reject(error);
       zygo.config.bundlesJSON = bundlesPath;
-      return resolve(Config.save(zygo.config));
+      return resolve(Config.save(zygo.config, {bundlesJSON: {type: 'path'}}));
     }));
   }));
 }

@@ -72,8 +72,14 @@ function renderRoutes(routes, context) {
     return route.component;
   }));
   var loadedModules = [];
-  return Promise.all(modules.map((function(module, i) {
-    return jspm.import(module).then((function(componentModule) {
+  return Promise.all(routes.map((function(route) {
+    return route.component;
+  })).map((function(module, i) {
+    return Promise.resolve().then((function() {
+      if (module)
+        return jspm.import(module);
+      return require('../defaults/id-component');
+    })).then((function(componentModule) {
       return loadedModules[i] = componentModule.default;
     }));
   }))).then((function() {
@@ -81,6 +87,11 @@ function renderRoutes(routes, context) {
       return React.createElement(next, context, component);
     }), null);
   })).then((function(component) {
+    var modules = routes.map((function(route) {
+      return route.component;
+    })).filter((function(module) {
+      return !!module;
+    }));
     return _renderComponent(component, modules);
   })).then((function(renderObject) {
     renderObject.context = context;

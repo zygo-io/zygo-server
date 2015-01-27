@@ -6,8 +6,8 @@ var assert = require('chai').assert;
 var zygo;
 
 var routes = [
-{component: 'app/two.jsx!', handler: 'app/one'},
-{component: 'app/one.jsx!', handler: 'app/two'}
+{component: 'app/two.jsx!', handler: 'app/two'},
+{component: 'app/one.jsx!', handler: 'app/one'}
 ];
 
 var context = {
@@ -62,8 +62,13 @@ describe("render.js tests", function() {
       .then(function(result) {
         return Render.renderPage(result, zygo);
       })
-      .then(function(result) {
-        console.log("TODO: complete the render.js tests");
+      .then(function(html) {
+        assert.match(html, /one.css/);
+        assert.match(html, /two.css/);
+        assert.match(html, /One/);
+        assert.match(html, /setContext/);
+        assert.match(html, /setRoutes/);
+
         done();
       }).catch(function(error) { console.log(error.stack); });
   });

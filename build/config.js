@@ -31,21 +31,9 @@ var zygoParseSpec = {
   routes: {
     type: 'json',
     default: path.join(defaultsDir, 'routes.json')
-  },
-  zygoHeader: {
-    type: 'file',
-    default: path.join(defaultsDir, 'zygoHeader.hb')
-  },
-  zygoFooter: {
-    type: 'file',
-    default: path.join(defaultsDir, 'zygoFooter.hb')
-  },
-  zygoBody: {
-    type: 'file',
-    default: path.join(defaultsDir, 'zygoBody.hb')
   }
 };
-var zygoSaveSpec = {bundlesJSON: {type: 'path'}};
+var zygoSaveSpec = {};
 function parse(configPath) {
   var spec = arguments[1] !== (void 0) ? arguments[1] : zygoParseSpec;
   var result = {};
