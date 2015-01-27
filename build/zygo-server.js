@@ -49,8 +49,11 @@ var Zygo = function Zygo(configFile) {
       }));
     }));
   },
-  createServer: function() {
-    return Server.createServer(this).listen(this.config.port);
+  createServer: function(port) {
+    var $__5 = this;
+    return Promise.resolve().then((function() {
+      return Server.createServer($__5).listen(port || $__5.config.port);
+    }));
   },
   build: function() {
     return Build.build(this);

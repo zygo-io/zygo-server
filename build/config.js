@@ -23,7 +23,7 @@ var zygoParseSpec = {
   port: {default: 8080},
   anchors: {default: true},
   defaultOptimization: {default: 'tlo'},
-  environment: {default: 'development'},
+  env: {default: 'development'},
   template: {
     type: 'file',
     default: path.join(defaultsDir, 'template.hb')
