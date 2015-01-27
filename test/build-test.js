@@ -27,11 +27,12 @@ describe("build.js tests", function() {
 
   it("builds correctly", function(done) {
     zygo.build().then(function() {
-      //TODO not sure how to test this,
-      // but if it gets this far it probably works
-      // (X_x) I swears
+      fs.readdir(path.join(__dirname, 'fake-app/build'), function(error, files) {
+        assert(!error);
+        assert(files.length > 1);
 
-      done();
+        done();
+      });
     }).catch(function(error) { console.log(error.stack); });
   });
 });

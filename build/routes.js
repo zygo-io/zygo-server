@@ -52,7 +52,9 @@ function runHandlers(routes) {
   var context = arguments[1] !== (void 0) ? arguments[1] : {};
   return routes.reduce((function(chain, route) {
     return chain.then((function() {
-      return route.handler ? jspm.import(route.handler) : null;
+      return route.serverHandler ? jspm.import(route.serverHandler) : null;
+    })).then((function(module) {
+      return !module && route.handler ? jspm.import(route.handler) : null;
     })).then((function(module) {
       return module ? module.handler(context) : null;
     }));
