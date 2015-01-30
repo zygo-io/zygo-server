@@ -99,10 +99,10 @@ function renderRoutes(routes, context) {
 }
 function renderPage(renderObject, zygo) {
   return runSerialize(renderObject.routes, renderObject.context).then((function() {
+    var includeBundles = zygo.config.bundlesJSON && zygo.config.env === 'production';
     var templateData = {
       cssTrace: normalizeCssTrace(renderObject.cssTrace, zygo),
-      bundles: zygo.config.bundlesJSON || null,
-      visibleBundles: zygo.config.bundlesJSON ? bundlesVisibleTo(zygo.config.bundlesJSON, renderObject.routes) : null,
+      bundles: includeBundles ? JSON.stringify(zygo.config.bundlesJSON) : null,
       component: renderObject.component,
       routes: JSON.stringify(zygo.config.routes),
       context: JSON.stringify(renderObject.context || {}),
@@ -129,20 +129,6 @@ function runSerialize(routes, context) {
       }));
     return handlers[i] = null;
   }
-}
-function bundlesVisibleTo(bundles, routes) {
-  var result = [];
-  Object.keys(bundles).map((function(key) {
-    var sharedRoutes = routes.filter((function(route) {
-      return bundles[key].routes.indexOf(route) !== -1;
-    }));
-    if (sharedRoutes.length === routes.length)
-      result.push({
-        path: key,
-        modules: bundles[key]
-      });
-  }));
-  return result;
 }
 function normalizeCssTrace(cssTrace, zygo) {
   return cssTrace.map((function(trace) {

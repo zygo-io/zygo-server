@@ -24,6 +24,7 @@ var zygoParseSpec = {
   anchors: {default: true},
   defaultOptimization: {default: 'tlo'},
   env: {default: 'development'},
+  middleware: {default: []},
   template: {
     type: 'file',
     default: path.join(defaultsDir, 'template.hb')

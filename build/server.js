@@ -17,14 +17,14 @@ function createServer(zygo) {
   var server = http.createServer();
   server._zygo = zygo;
   server._zygowares = [serveStatic.bind(server), serveRoutes.bind(server)];
-  server._middlewares = [];
+  server._middlewares = loadMiddleware(zygo.config.middleware);
   server.use = addMiddleware.bind(server);
   server.on('request', handleRequest.bind(server));
   return server;
 }
 function serveStatic(req, res, next) {
   var staticPath = path.join(this._zygo.baseURL, req.url);
-  fs.readFile(staticPath, 'utf-8', (function(error, data) {
+  fs.readFile(staticPath, (function(error, data) {
     if (error)
       return next();
     res.writeHead(200, {'Content-Type': mime.lookup(staticPath)});
@@ -38,7 +38,7 @@ function serveRoutes(req, res, next) {
     res.write(html);
     res.end();
   })).catch((function(error) {
-    console.log("Error routing " + req.url + " : " + error.stack);
+    console.log("Error routing " + req.url + " :\n" + error.stack);
     res.writeHead(404, {'Content-Type': 'text/plain'});
     res.write("404 not found");
     res.end();
@@ -56,5 +56,14 @@ function handleRequest(req, res) {
 }
 function addMiddleware(requestHandler) {
   this._middlewares.push(requestHandler);
+}
+function loadMiddleware(middleware) {
+  if (!(middleware instanceof Array))
+    middleware = [middleware];
+  return middleware.map((function(module) {
+    return path.resolve(process.cwd(), module);
+  })).map(require).map((function(module) {
+    return module.middleware;
+  }));
 }
 //# sourceURL=server.js

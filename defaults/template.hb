@@ -4,7 +4,7 @@
   <script src="/jspm_packages/system.js"></script>
   <script src="/config.js"></script>
 {{#each cssTrace}}
-  <link rel="stylesheet" type="text/css" href="/{{{this}}}"></link>
+  <link rel="stylesheet" type="text/css" href="{{{this}}}"></link>
 {{/each}}
 
 

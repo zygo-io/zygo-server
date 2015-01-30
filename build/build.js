@@ -29,7 +29,11 @@ function _build(bundles, zygo) {
     throw new Error("buildDir has not been set in zygo.json.");
   var bundlesJSON = {};
   bundles.map((function(bundle) {
-    var bundleHash = crypto.createHash('md5').update(Object.keys(bundle.tree).toString()).digest('hex');
+    var bundleHash = crypto.createHash('md5');
+    Object.keys(bundle.tree).map((function(key) {
+      return bundleHash.update(bundle.tree[key].source);
+    }));
+    bundleHash = bundleHash.digest('hex');
     var bundlePath = path.relative(zygo.baseURL, path.join(zygo.config.buildDir, bundleHash));
     var filePath = path.join(zygo.baseURL, bundlePath) + '.js';
     builder.buildTree(bundle.tree, filePath);
