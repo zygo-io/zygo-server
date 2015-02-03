@@ -6,6 +6,9 @@ Object.defineProperties(exports, {
   save: {get: function() {
       return save;
     }},
+  desugarRoutes: {get: function() {
+      return desugarRoutes;
+    }},
   __esModule: {value: true}
 });
 var $__path__,
@@ -129,6 +132,17 @@ function getFile(file) {
       else
         return resolve(data);
     }));
+  }));
+}
+function desugarRoutes(route) {
+  Object.keys(route).map((function(key) {
+    if (typeof route[key] === "string") {
+      if (key[0] === '/') {
+        route[key] = {component: route[key]};
+      }
+    } else {
+      desugarRoutes(route[key]);
+    }
   }));
 }
 //# sourceURL=config.js

@@ -38,6 +38,7 @@ var Zygo = function Zygo(configFile) {
     var $__5 = this;
     return Config.parse(this.configFile).then((function(config) {
       $__5.config = config;
+      Config.desugarRoutes($__5.config.routes);
       var packageDir = path.dirname($__5.config.packageJSON);
       jspm.setPackagePath(packageDir);
       return jspm.configureLoader().then((function(cfg) {
