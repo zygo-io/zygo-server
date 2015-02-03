@@ -15,12 +15,14 @@ var $__react__,
     $__jspm__,
     $__systemjs_45_builder__,
     $__fs__,
-    $__handlebars__;
+    $__handlebars__,
+    $__routes__;
 var React = ($__react__ = require("react"), $__react__ && $__react__.__esModule && $__react__ || {default: $__react__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
 var Handlebars = ($__handlebars__ = require("handlebars"), $__handlebars__ && $__handlebars__.__esModule && $__handlebars__ || {default: $__handlebars__}).default;
+var Routes = ($__routes__ = require("./routes"), $__routes__ && $__routes__.__esModule && $__routes__ || {default: $__routes__});
 function renderComponent(path, state) {
   return jspm.import(path).then((function(componentModule) {
     var element = React.createElement(componentModule.default, state);
@@ -106,7 +108,7 @@ function renderPage(renderObject, zygo) {
       component: renderObject.component,
       routes: JSON.stringify(zygo.config.routes),
       context: JSON.stringify(renderObject.context || {}),
-      path: renderObject.context.currentRequest.path,
+      path: renderObject.context.loadingRequest.path,
       meta: renderObject.context.meta,
       addLinkHandlers: zygo.config.anchors
     };
@@ -123,11 +125,9 @@ function runSerialize(routes, context) {
     }));
   }));
   function getHandler(route, i) {
-    if (route.handler)
-      return jspm.import(route.handler).then((function(handler) {
-        return handlers[i] = handler;
-      }));
-    return handlers[i] = null;
+    Routes.getHandler(route).then((function(handler) {
+      return handlers[i] = handler ? handler : null;
+    }));
   }
 }
 function normalizeCssTrace(cssTrace, zygo) {

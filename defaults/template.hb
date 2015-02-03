@@ -37,7 +37,7 @@
     zygo._addLinkHandlers();
 {{/if}}
 
-    zygo.route('{{path}}', zygo.context.currentRequest.headers);
+    zygo.route('{{path}}', zygo.context.loadingRequest.headers);
   });
 </script>
 </html>

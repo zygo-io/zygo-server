@@ -67,7 +67,7 @@ var Zygo = function Zygo(configFile) {
         throw new Error("No default or matching route for path: " + path);
       var context = {
         meta: {},
-        currentRequest: {
+        loadingRequest: {
           routes: match.routes,
           path: path,
           options: match.options,

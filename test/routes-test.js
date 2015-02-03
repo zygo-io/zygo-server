@@ -38,7 +38,7 @@ var fakeRoutes = {
 };
 
 describe("routes.js tests", function() {
-  this.timeout(50000);
+  this.timeout(5000);
 
   before(function(done) {
     new Zygo('test/fake-app/zygo.json').initialize()
