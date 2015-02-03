@@ -66,7 +66,18 @@ function getPageObjects(routes) {
       else if (module && module.default.handler)
         pages[path].push(module.default.handler);
       return Promise.all(pages[path].map((function(modulePath) {
-        return builder.trace(modulePath);
+        return builder.trace(modulePath).then((function(trace) {
+          var result = {
+            moduleName: trace.moduleName,
+            tree: []
+          };
+          Object.keys(trace.tree).filter((function(key) {
+            return !key.match(/\.css!/);
+          })).map((function(key) {
+            return result.tree[key] = trace.tree[key];
+          }));
+          return result;
+        }));
       }))).then((function(tree) {
         return pages[path] = tree;
       }));
