@@ -22,10 +22,6 @@
   System.baseURL = location.href.substr(0, location.href.length - {{path.length}});
 
   System.import("zygo").then(function(zygo) {
-    zygo._setContext({{{context}}});
-    zygo._setRoutes({{{routes}}});
-    zygo._deserializeContext();
-
 {{#if bundles}}
     zygo._setBundles({{{bundles}}});
 {{#each visibleBundles}}
@@ -33,10 +29,15 @@
 {{/each}}
 {{/if}}
 
+    zygo._setContext({{{context}}});
+    zygo._setRoutes({{{routes}}});
+
 {{#if addLinkHandlers}}
     zygo._addLinkHandlers();
 {{/if}}
 
+    zygo.setVisibleBundles(zygo.context.loadingRequest.routes);
+    zygo._deserializeContext(zygo.context.loadingRequest.routes);
     zygo.route('{{path}}', zygo.context.loadingRequest.headers);
   });
 </script>

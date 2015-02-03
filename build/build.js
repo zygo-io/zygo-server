@@ -55,17 +55,21 @@ function _build(bundles, zygo) {
 function getPageObjects(routes) {
   var pages = {};
   return traverse(routes, '', (function(path, route) {
-    pages[path] = [];
-    if (route.component)
-      pages[path].push(route.component);
-    if (route.clientHandler)
-      pages[path].push(route.clientHandler);
-    else if (route.handler)
-      pages[path].push(route.handler);
-    return Promise.all(pages[path].map((function(module) {
-      return builder.trace(module);
-    }))).then((function(tree) {
-      return pages[path] = tree;
+    return Promise.resolve().then((function() {
+      return route.component ? jspm.import(route.component) : null;
+    })).then((function(module) {
+      pages[path] = [];
+      if (route.component)
+        pages[path].push(route.component);
+      if (module && module.default.clientHandler)
+        pages[path].push(module.default.clientHandler);
+      else if (module && module.default.handler)
+        pages[path].push(module.default.handler);
+      return Promise.all(pages[path].map((function(modulePath) {
+        return builder.trace(modulePath);
+      }))).then((function(tree) {
+        return pages[path] = tree;
+      }));
     }));
   })).then((function() {
     return pages;
