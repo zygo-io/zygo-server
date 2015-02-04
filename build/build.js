@@ -72,7 +72,8 @@ function getPageObjects(routes) {
             tree: []
           };
           Object.keys(trace.tree).filter((function(key) {
-            return !key.match(/\.css!/);
+            var record = trace.tree[key];
+            return !((record.metadata.build && record.metadata.build === false) || (record.metadata.plugin && record.metadata.plugin.build === false));
           })).map((function(key) {
             return result.tree[key] = trace.tree[key];
           }));
