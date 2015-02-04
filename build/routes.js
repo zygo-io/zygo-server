@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperties(exports, {
+  RouteRedirect: {get: function() {
+      return RouteRedirect;
+    }},
   match: {get: function() {
       return match;
     }},
@@ -19,6 +22,10 @@ var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $_
 var pattern = ($__url_45_pattern__ = require("url-pattern"), $__url_45_pattern__ && $__url_45_pattern__.__esModule && $__url_45_pattern__ || {default: $__url_45_pattern__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
+var RouteRedirect = function RouteRedirect(redirect) {
+  this.redirect = redirect;
+};
+($traceurRuntime.createClass)(RouteRedirect, {}, {}, Error);
 function match(path, routes) {
   var result = _match(path, '', routes);
   if (!result)
@@ -62,6 +69,9 @@ function runHandlers(routes) {
       return getHandler(route);
     })).then((function(module) {
       return module ? module.handler(context) : null;
+    })).then((function(result) {
+      if (result && result.redirect)
+        throw new RouteRedirect(result.redirect);
     }));
   }), Promise.resolve()).then((function() {
     return context;

@@ -26,10 +26,6 @@ var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $_
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
 var Events = ($__events__ = require("events"), $__events__ && $__events__.__esModule && $__events__ || {default: $__events__}).default;
 var EventEmitter = Events.EventEmitter;
-var RouteRedirect = function RouteRedirect(redirect) {
-  this.redirect = redirect;
-};
-($traceurRuntime.createClass)(RouteRedirect, {}, {}, Error);
 var Zygo = function Zygo(configFile) {
   this.configFile = configFile;
 };
@@ -81,6 +77,11 @@ var Zygo = function Zygo(configFile) {
       return Render.renderRoutes(match.routes, context);
     })).then((function(renderObject) {
       return Render.renderPage(renderObject, $__5);
+    })).catch((function(error) {
+      if (error instanceof Routes.RouteRedirect)
+        return $__5.route(error.redirect, headers, requestMethod);
+      else
+        throw error;
     }));
   }
 }, {}, EventEmitter);

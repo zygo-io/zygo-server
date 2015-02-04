@@ -19,7 +19,7 @@
   </body>
 
   <script>
-  System.baseURL = location.href.substr(0, location.href.length - {{path.length}});
+  System.baseURL = "{{{baseURL}}}";
 
   System.import("zygo").then(function(zygo) {
 {{#if bundles}}

@@ -110,6 +110,7 @@ function renderPage(renderObject, zygo) {
       context: JSON.stringify(renderObject.context || {}),
       path: renderObject.context.loadingRequest.path,
       meta: renderObject.context.meta,
+      baseURL: 'http://' + renderObject.context.loadingRequest.headers.host,
       addLinkHandlers: zygo.config.anchors
     };
     var template = Handlebars.compile(zygo.config.template);
