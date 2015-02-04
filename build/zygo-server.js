@@ -52,8 +52,11 @@ var Zygo = function Zygo(configFile) {
       return Server.createServer($__5).listen(port || $__5.config.port);
     }));
   },
-  build: function() {
+  bundle: function() {
     return Build.build(this);
+  },
+  unbundle: function() {
+    return Build.unbuild(this);
   },
   route: function(path, headers, requestMethod) {
     var $__5 = this;

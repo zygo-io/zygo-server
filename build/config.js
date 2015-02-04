@@ -86,6 +86,8 @@ function save(config) {
         return;
       if (spec[key].type && spec[key].type === 'file')
         return;
+      if (spec[key].type && spec[key].type === 'delete')
+        return delete json[key];
       var value = config[key];
       if (value) {
         if (spec[key].type && spec[key].type === 'path')

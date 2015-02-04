@@ -3,6 +3,9 @@ Object.defineProperties(exports, {
   build: {get: function() {
       return build;
     }},
+  unbuild: {get: function() {
+      return unbuild;
+    }},
   __esModule: {value: true}
 });
 var $__systemjs_45_basic_45_optimize__,
@@ -49,6 +52,21 @@ function _build(bundles, zygo) {
         return reject(error);
       zygo.config.bundlesJSON = bundlesPath;
       return resolve(Config.save(zygo.config, {bundlesJSON: {type: 'path'}}));
+    }));
+  }));
+}
+function unbuild(zygo) {
+  return Config.save(zygo.config, {bundlesJSON: {type: 'delete'}}).then((function() {
+    return new Promise((function(resolve, reject) {
+      if (!zygo.config.buildDir)
+        return resolve();
+      fs.readdir(zygo.config.buildDir, (function(error, files) {
+        if (error)
+          return resolve();
+        return resolve(Promise.all(files.map((function(file) {
+          return fs.unlink(path.resolve(zygo.config.buildDir, file));
+        }))));
+      }));
     }));
   }));
 }
