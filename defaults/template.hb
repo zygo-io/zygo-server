@@ -38,7 +38,8 @@
 
     zygo.setVisibleBundles(zygo.context.loadingRequest.routes);
     zygo._deserializeContext(zygo.context.loadingRequest.routes);
-    zygo.route('{{path}}', zygo.context.loadingRequest.headers);
+    zygo.setMetadata();
+    zygo.refresh();
   });
 </script>
 </html>

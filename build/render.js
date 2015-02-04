@@ -94,6 +94,7 @@ function renderRoutes(routes, context) {
     routes.reverse();
     return _renderComponent(component, modules);
   })).then((function(renderObject) {
+    context.currentRequest = context.loadingRequest;
     renderObject.context = context;
     renderObject.routes = routes;
     return renderObject;
