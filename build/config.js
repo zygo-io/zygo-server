@@ -17,7 +17,7 @@ var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $_
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
 var defaultsDir = path.resolve(__dirname, '../defaults');
 var zygoParseSpec = {
-  buildDir: {type: 'path'},
+  buildDir: {type: 'dir'},
   bundlesJSON: {type: 'json'},
   packageJSON: {
     type: 'path',
@@ -69,6 +69,10 @@ function parseConfigObject(name, config, json, result, baseDir) {
     return resolvePath(value, baseDir).then((function(path) {
       return result[name] = path;
     })).catch(error(name, "problem resolving path: " + value));
+  if (config.type === 'dir')
+    return resolveDir(value, baseDir).then((function(path) {
+      return result[name] = path;
+    })).catch(error(name, "couldn't stat or create directory: " + value));
   if (config.type === 'file')
     return resolvePath(value, baseDir).then(getFile).then((function(data) {
       return result[name] = data;
@@ -110,6 +114,25 @@ function error(name, msg) {
   return (function() {
     throw new Error("Error loading " + name + " in config - " + msg);
   });
+}
+function resolveDir(url, relativeTo) {
+  return new Promise((function(resolve, reject) {
+    resolvePath(url, relativeTo).then((function(path) {
+      return resolve(path);
+    })).catch((function(error) {
+      console.log("Can't stat dir " + url + ", creating it.");
+      var dirs = url.split(path.sep);
+      dirs.reduce((function(chain, dir, i) {
+        return chain.then((function() {
+          return new Promise((function(resolve, reject) {
+            fs.mkdir(path.resolve(relativeTo, dirs.slice(0, i + 1).join(path.sep)), resolve);
+          }));
+        }));
+      }), Promise.resolve()).then((function() {
+        return resolve(resolvePath(url, relativeTo));
+      })).catch(reject);
+    }));
+  }));
 }
 function resolvePath(url, relativeTo) {
   var attempt = path.resolve(relativeTo, url);
