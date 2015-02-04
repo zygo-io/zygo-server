@@ -95,6 +95,7 @@ function renderRoutes(routes, context) {
     return _renderComponent(component, modules);
   })).then((function(renderObject) {
     context.currentRequest = context.loadingRequest;
+    delete context.loadingRequest;
     renderObject.context = context;
     renderObject.routes = routes;
     return renderObject;
@@ -109,9 +110,9 @@ function renderPage(renderObject, zygo) {
       component: renderObject.component,
       routes: JSON.stringify(zygo.config.routes),
       context: JSON.stringify(renderObject.context || {}),
-      path: renderObject.context.loadingRequest.path,
+      path: renderObject.context.currentRequest.path,
       meta: renderObject.context.meta,
-      baseURL: 'http://' + renderObject.context.loadingRequest.headers.host,
+      baseURL: 'http://' + renderObject.context.currentRequest.headers.host,
       addLinkHandlers: zygo.config.anchors
     };
     var template = Handlebars.compile(zygo.config.template);

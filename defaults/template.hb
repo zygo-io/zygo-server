@@ -36,8 +36,8 @@
     zygo._addLinkHandlers();
 {{/if}}
 
-    zygo.setVisibleBundles(zygo.context.loadingRequest.routes);
-    zygo._deserializeContext(zygo.context.loadingRequest.routes);
+    zygo.setVisibleBundles(zygo.context.currentRequest.routes);
+    zygo._deserializeContext(zygo.context.currentRequest.routes);
     zygo.setMetadata();
     zygo.refresh();
   });
