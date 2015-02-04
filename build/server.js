@@ -38,7 +38,7 @@ function serveRoutes(req, res, next) {
     res.write(html);
     res.end();
   })).catch((function(error) {
-    console.log("Error routing " + req.url + " :\n" + error.stack);
+    console.log("Error routing " + req.url + " :\n" + error);
     res.writeHead(404, {'Content-Type': 'text/plain'});
     res.write("404 not found");
     res.end();
