@@ -32,9 +32,7 @@ var Zygo = function Zygo(configFile) {
 ($traceurRuntime.createClass)(Zygo, {
   initialize: function() {
     var $__5 = this;
-    return Config.parse(this.configFile).then((function(config) {
-      $__5.config = config;
-      Config.desugarRoutes($__5.config.routes);
+    return this.loadConfig().then((function() {
       var packageDir = path.dirname($__5.config.packageJSON);
       jspm.setPackagePath(packageDir);
       return jspm.configureLoader().then((function(cfg) {
@@ -46,6 +44,13 @@ var Zygo = function Zygo(configFile) {
       }));
     }));
   },
+  loadConfig: function() {
+    var $__5 = this;
+    return Config.parse(this.configFile).then((function(config) {
+      $__5.config = config;
+      Config.desugarRoutes($__5.config.routes);
+    }));
+  },
   createServer: function(port) {
     var $__5 = this;
     return Promise.resolve().then((function() {
@@ -53,10 +58,10 @@ var Zygo = function Zygo(configFile) {
     }));
   },
   bundle: function() {
-    return Build.build(this);
+    return Build.build(this).then(this.loadConfig.bind(this));
   },
   unbundle: function() {
-    return Build.unbuild(this);
+    return Build.unbuild(this).then(this.loadConfig.bind(this));
   },
   route: function(path, headers, requestMethod) {
     var $__5 = this;
