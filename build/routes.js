@@ -84,20 +84,27 @@ function getHandler(route) {
   return jspm.import(route.component).then((function(module) {
     return Promise.resolve().then((function() {
       if (module.default.serverHandler) {
-        try {
-          return require(path.resolve(baseURL, module.default.serverHandler));
-        } catch (_) {
-          return jspm.import(module.default.serverHandler);
-        }
+        return jspm.normalize(module.default.serverHandler, route.component).then((function(normalized) {
+          try {
+            return require(path.resolve(baseURL, normalized));
+          } catch (_) {
+            return jspm.import(normalized);
+          }
+        }));
       } else
         return null;
     })).then((function(handler) {
       if (handler)
         return handler;
       if (module.default.handler)
-        return jspm.import(module.default.handler);
+        return normalizeAndImport(module.default.handler);
       return null;
     }));
   }));
+  function normalizeAndImport(handler) {
+    return jspm.normalize(handler, route.component).then((function(normalized) {
+      return jspm.import(normalized);
+    }));
+  }
 }
 //# sourceURL=routes.js

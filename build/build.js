@@ -84,7 +84,9 @@ function getPageObjects(routes) {
       else if (module && module.default.handler)
         pages[path].push(module.default.handler);
       return Promise.all(pages[path].map((function(modulePath) {
-        return builder.trace(modulePath).then((function(trace) {
+        return jspm.normalize(modulePath, route.component).then((function(modulePath) {
+          return builder.trace(modulePath);
+        })).then((function(trace) {
           var result = {
             moduleName: trace.moduleName,
             tree: []

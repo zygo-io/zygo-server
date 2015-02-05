@@ -18,12 +18,14 @@ var $__react__,
     $__jspm__,
     $__systemjs_45_builder__,
     $__fs__,
+    $__path__,
     $__handlebars__,
     $__routes__;
 var React = ($__react__ = require("react"), $__react__ && $__react__.__esModule && $__react__ || {default: $__react__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
+var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var Handlebars = ($__handlebars__ = require("handlebars"), $__handlebars__ && $__handlebars__.__esModule && $__handlebars__ || {default: $__handlebars__}).default;
 var Routes = ($__routes__ = require("./routes"), $__routes__ && $__routes__.__esModule && $__routes__ || {default: $__routes__});
 function renderComponent(path, state) {
@@ -146,7 +148,7 @@ function getVisibleBundles(routes, zygo) {
       return zygo.config.bundlesJSON[key].routes.indexOf(route._path) !== -1;
     }));
     if (sharedRoutes.length > 0)
-      bundles.push(key);
+      bundles.push('/' + key);
   }));
   return bundles;
 }
