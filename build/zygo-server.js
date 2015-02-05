@@ -80,6 +80,9 @@ var Zygo = function Zygo(configFile) {
           method: requestMethod
         }
       };
+      Object.keys($__5.config.defaultContext).map((function(key) {
+        context[key] = $__5.config.defaultContext[key];
+      }));
       return Routes.runHandlers(match.routes, context);
     })).then((function(context) {
       return Render.renderRoutes(match.routes, context);

@@ -23,6 +23,7 @@ var zygoParseSpec = {
     type: 'path',
     default: 'package.json'
   },
+  defaultContext: {default: {}},
   port: {default: 8080},
   anchors: {default: true},
   defaultOptimization: {default: 'tlo'},
