@@ -79,7 +79,7 @@ function runHandlers(routes) {
 }
 function getHandler(route) {
   if (!route.component)
-    return null;
+    return Promise.resolve();
   var baseURL = builder.loader.baseURL.substr('file:'.length);
   return jspm.import(route.component).then((function(module) {
     return Promise.resolve().then((function() {

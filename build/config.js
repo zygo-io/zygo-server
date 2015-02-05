@@ -35,7 +35,8 @@ var zygoParseSpec = {
   },
   routes: {
     type: 'json',
-    default: path.join(defaultsDir, 'routes.json')
+    default: 'routes.json',
+    required: true
   }
 };
 var zygoSaveSpec = {};
