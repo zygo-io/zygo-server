@@ -19,7 +19,9 @@ function createServer(zygo) {
   server._zygowares = [serveStatic.bind(server), serveRoutes.bind(server)];
   server._middlewares = loadMiddleware(zygo.config.middleware);
   server.use = addMiddleware.bind(server);
-  server.on('request', handleRequest.bind(server));
+  server.on('request', (function(req, res) {
+    return handleRequest.call(server, req, res, zygo.config);
+  }));
   return server;
 }
 function serveStatic(req, res, next) {
@@ -44,13 +46,13 @@ function serveRoutes(req, res, next) {
     res.end();
   }));
 }
-function handleRequest(req, res) {
+function handleRequest(req, res, config) {
   var handlers = this._middlewares.concat(this._zygowares);
   handlers[0](req, res, next(0));
   function next(index) {
     return (function() {
       if (index < handlers.length - 1)
-        handlers[index + 1](req, res, next(index + 1));
+        handlers[index + 1](req, res, next(index + 1), config);
     });
   }
 }

@@ -48,6 +48,7 @@ function parse(configPath) {
     result.path = resolvedPath;
     return getFile(resolvedPath);
   })).then(JSON.parse).then((function(json) {
+    result = json;
     return Promise.all(Object.keys(spec).map((function(key) {
       return parseConfigObject(key, spec[key], json, result, baseDir);
     })));
