@@ -9,6 +9,9 @@ Object.defineProperties(exports, {
   renderPage: {get: function() {
       return renderPage;
     }},
+  getVisibleBundles: {get: function() {
+      return getVisibleBundles;
+    }},
   __esModule: {value: true}
 });
 var $__react__,
@@ -107,6 +110,7 @@ function renderPage(renderObject, zygo) {
     var templateData = {
       cssTrace: normalizeCssTrace(renderObject.cssTrace, zygo),
       bundles: includeBundles ? JSON.stringify(zygo.config.bundlesJSON) : null,
+      visibleBundles: includeBundles ? getVisibleBundles(renderObject.routes, zygo) : null,
       component: renderObject.component,
       routes: JSON.stringify(zygo.config.routes),
       context: JSON.stringify(renderObject.context || {}),
@@ -132,6 +136,19 @@ function runSerialize(routes, context) {
       return handlers[i] = handler ? handler : null;
     }));
   }
+}
+function getVisibleBundles(routes, zygo) {
+  if (!zygo.config.bundlesJSON)
+    return;
+  var bundles = [];
+  Object.keys(zygo.config.bundlesJSON).map((function(key) {
+    var sharedRoutes = routes.filter((function(route) {
+      return zygo.config.bundlesJSON[key].routes.indexOf(route._path) !== -1;
+    }));
+    if (sharedRoutes.length > 0)
+      bundles.push(key);
+  }));
+  return bundles;
 }
 function normalizeCssTrace(cssTrace, zygo) {
   return cssTrace.map((function(trace) {

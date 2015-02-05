@@ -6,6 +6,9 @@
 {{#each cssTrace}}
   <link rel="stylesheet" type="text/css" href="{{{this}}}"></link>
 {{/each}}
+{{#each visibleBundles}}
+  <script src="{{{this}}}.js"></script>
+{{/each}}
 
 
   <head>
@@ -24,9 +27,6 @@
   System.import("zygo").then(function(zygo) {
 {{#if bundles}}
     zygo._setBundles({{{bundles}}});
-{{#each visibleBundles}}
-    System.bundles['{{{this.path}}}'] = [{{#each this.modules}}'{{{this}}}',{{/each}}];
-{{/each}}
 {{/if}}
 
     zygo._setContext({{{context}}});
