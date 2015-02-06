@@ -114,7 +114,7 @@ function renderPage(renderObject, zygo) {
       bundles: includeBundles ? JSON.stringify(zygo.config.bundlesJSON) : null,
       visibleBundles: includeBundles ? getVisibleBundles(renderObject.routes, zygo) : null,
       component: renderObject.component,
-      routes: JSON.stringify(zygo.config.routes),
+      routes: JSON.stringify(zygo.routes),
       context: JSON.stringify(renderObject.context || {}),
       path: renderObject.context.currentRequest.path,
       meta: renderObject.context.meta,

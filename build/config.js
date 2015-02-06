@@ -12,9 +12,11 @@ Object.defineProperties(exports, {
   __esModule: {value: true}
 });
 var $__path__,
-    $__fs__;
+    $__fs__,
+    $__jspm__;
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
+var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 var defaultsDir = path.resolve(__dirname, '../defaults');
 var zygoParseSpec = {
   buildDir: {type: 'dir'},
@@ -33,11 +35,7 @@ var zygoParseSpec = {
     type: 'file',
     default: path.join(defaultsDir, 'template.hb')
   },
-  routes: {
-    type: 'json',
-    default: 'routes.json',
-    required: true
-  }
+  routes: {required: true}
 };
 var zygoSaveSpec = {};
 function parse(configPath) {
@@ -176,5 +174,6 @@ function desugarRoutes(route) {
       desugarRoutes(route[key]);
     }
   }));
+  return route;
 }
 //# sourceURL=config.js

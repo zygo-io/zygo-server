@@ -41,6 +41,12 @@ var Zygo = function Zygo(configFile) {
         return builder.loadConfig(path.resolve($__5.baseURL, 'config.js'));
       })).then((function() {
         return builder.config({baseURL: 'file:' + $__5.baseURL});
+      })).then((function() {
+        return jspm.import($__5.config.routes);
+      })).then((function(module) {
+        return module.default;
+      })).then(Config.desugarRoutes).then((function(routes) {
+        return $__5.routes = routes;
       }));
     }));
   },
@@ -48,7 +54,6 @@ var Zygo = function Zygo(configFile) {
     var $__5 = this;
     return Config.parse(this.configFile).then((function(config) {
       $__5.config = config;
-      Config.desugarRoutes($__5.config.routes);
     }));
   },
   createServer: function(port) {
@@ -67,7 +72,7 @@ var Zygo = function Zygo(configFile) {
     var $__5 = this;
     var match;
     return Promise.resolve().then((function() {
-      match = Routes.match(path, $__5.config.routes);
+      match = Routes.match(path, $__5.routes);
       if (!match)
         throw new Error("No default or matching route for path: " + path);
       var context = {

@@ -23,7 +23,7 @@ var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {
 var crypto = ($__crypto__ = require("crypto"), $__crypto__ && $__crypto__.__esModule && $__crypto__ || {default: $__crypto__}).default;
 var Config = ($__config__ = require("./config"), $__config__ && $__config__.__esModule && $__config__ || {default: $__config__});
 function build(zygo) {
-  return getPageObjects(zygo.config.routes).then(optimize).then((function(bundles) {
+  return getPageObjects(zygo.routes).then(optimize).then((function(bundles) {
     return _build(bundles, zygo);
   }));
 }
