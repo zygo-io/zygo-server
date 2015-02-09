@@ -84,11 +84,15 @@ var Zygo = function Zygo(configFile) {
         loadRoute: {
           routes: match.routes,
           path: path,
-          options: match.options,
           headers: headers,
           method: requestMethod
         }
       };
+      Object.keys(match.options).map((function(key) {
+        if (key == 'path' || key == 'routes' || key == 'headers' || key == 'method')
+          throw new Error("Invalid option id in route path: :" + key);
+        context.loadRoute[key] = match.options[key];
+      }));
       Object.keys($__5.config.defaultContext).map((function(key) {
         context[key] = $__5.config.defaultContext[key];
       }));
