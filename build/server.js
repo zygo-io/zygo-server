@@ -23,7 +23,7 @@ function createServer(zygo) {
     server._middlewares = middlewares;
     server.use = addMiddleware.bind(server);
     server.on('request', (function(req, res) {
-      return handleRequest.call(server, req, res, zygo.config);
+      return handleRequest.call(server, req, res, zygo);
     }));
     return server;
   }));
@@ -50,13 +50,13 @@ function serveRoutes(req, res, next) {
     res.end();
   }));
 }
-function handleRequest(req, res, config) {
+function handleRequest(req, res, zygo) {
   var handlers = this._middlewares.concat(this._zygowares);
-  handlers[0](req, res, next(0));
+  handlers[0](req, res, next(0), zygo);
   function next(index) {
     return (function() {
       if (index < handlers.length - 1)
-        handlers[index + 1](req, res, next(index + 1), config);
+        handlers[index + 1](req, res, next(index + 1), zygo);
     });
   }
 }
