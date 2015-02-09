@@ -61,7 +61,9 @@ var Zygo = function Zygo(configFile) {
   createServer: function(port) {
     var $__5 = this;
     return Promise.resolve().then((function() {
-      return Server.createServer($__5).listen(port || $__5.config.port);
+      return Server.createServer($__5);
+    })).then((function(server) {
+      return server.listen(port || $__5.config.port);
     }));
   },
   bundle: function() {

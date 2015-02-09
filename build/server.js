@@ -8,21 +8,25 @@ Object.defineProperties(exports, {
 var $__mime__,
     $__http__,
     $__path__,
-    $__fs__;
+    $__fs__,
+    $__jspm__;
 var mime = ($__mime__ = require("mime"), $__mime__ && $__mime__.__esModule && $__mime__ || {default: $__mime__}).default;
 var http = ($__http__ = require("http"), $__http__ && $__http__.__esModule && $__http__ || {default: $__http__}).default;
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
+var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 function createServer(zygo) {
   var server = http.createServer();
   server._zygo = zygo;
   server._zygowares = [serveStatic.bind(server), serveRoutes.bind(server)];
-  server._middlewares = loadMiddleware(zygo.config.middleware);
-  server.use = addMiddleware.bind(server);
-  server.on('request', (function(req, res) {
-    return handleRequest.call(server, req, res, zygo.config);
+  return loadMiddleware(zygo.config.middleware).then((function(middlewares) {
+    server._middlewares = middlewares;
+    server.use = addMiddleware.bind(server);
+    server.on('request', (function(req, res) {
+      return handleRequest.call(server, req, res, zygo.config);
+    }));
+    return server;
   }));
-  return server;
 }
 function serveStatic(req, res, next) {
   var staticPath = path.join(this._zygo.baseURL, req.url);
@@ -41,7 +45,6 @@ function serveRoutes(req, res, next) {
     res.end();
   })).catch((function(error) {
     console.log("Error routing " + req.url + " :\n" + error);
-    console.log(error.stack);
     res.writeHead(404, {'Content-Type': 'text/plain'});
     res.write("404 not found");
     res.end();
@@ -63,10 +66,10 @@ function addMiddleware(requestHandler) {
 function loadMiddleware(middleware) {
   if (!(middleware instanceof Array))
     middleware = [middleware];
-  return middleware.map((function(module) {
-    return path.resolve(process.cwd(), module);
-  })).map(require).map((function(module) {
-    return module.middleware;
-  }));
+  return Promise.all(middleware.map((function(modulePath) {
+    return jspm.import(modulePath).then((function(module) {
+      return module.middleware;
+    }));
+  })));
 }
 //# sourceURL=server.js
