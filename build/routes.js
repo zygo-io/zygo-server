@@ -30,8 +30,11 @@ var RouteRedirect = function RouteRedirect(redirect) {
 ($traceurRuntime.createClass)(RouteRedirect, {}, {}, Error);
 function match(path, routes) {
   var result = _match(path, '', routes);
-  if (!result)
-    return null;
+  if (!result) {
+    if (!routes.default)
+      return null;
+    result = [routes.default];
+  }
   var options = result[0].options;
   delete result[0].options;
   return {

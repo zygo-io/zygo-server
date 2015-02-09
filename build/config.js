@@ -37,7 +37,10 @@ var zygoParseSpec = {
     type: 'file',
     default: path.join(defaultsDir, 'template.hb')
   },
-  routes: {required: true}
+  routes: {
+    required: true,
+    default: './routes'
+  }
 };
 var zygoSaveSpec = {};
 function parse(configPath) {
@@ -62,7 +65,12 @@ function parse(configPath) {
   })).catch(Debug.propagate("Error parsing zygo.json: "));
 }
 function parseConfigObject(name, config, json, result, baseDir) {
-  var value = json[name] || config.default;
+  var value = json[name];
+  if (!value && config.default) {
+    if (Debug.mode.debugMode)
+      console.log("No config for " + name + ", reverting to default: " + config.default);
+    value = config.default;
+  }
   if (!value) {
     if (config.required)
       throw new Error("Error: config does not contain a value for " + name);
