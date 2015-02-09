@@ -13,10 +13,12 @@ Object.defineProperties(exports, {
 });
 var $__path__,
     $__fs__,
-    $__jspm__;
+    $__jspm__,
+    $__debug__;
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
+var Debug = ($__debug__ = require("./debug"), $__debug__ && $__debug__.__esModule && $__debug__ || {default: $__debug__});
 var defaultsDir = path.resolve(__dirname, '../defaults');
 var zygoParseSpec = {
   buildDir: {type: 'dir'},
@@ -57,7 +59,7 @@ function parse(configPath) {
     }));
   })).then((function() {
     return result;
-  }));
+  })).catch(Debug.propagate("Error parsing zygo.json: "));
 }
 function parseConfigObject(name, config, json, result, baseDir) {
   var value = json[name] || config.default;
@@ -113,7 +115,7 @@ function save(config) {
         return resolve();
       });
     }));
-  }));
+  })).catch(Debug.propagate("Error saving config: "));
 }
 function error(name, msg) {
   return (function() {
@@ -137,7 +139,7 @@ function resolveDir(url, relativeTo) {
         return resolve(resolvePath(url, relativeTo));
       })).catch(reject);
     }));
-  }));
+  })).catch(Debug.propagate("Error resolving dir in config: "));
 }
 function resolvePath(url, relativeTo) {
   var attempt = path.resolve(relativeTo, url);
@@ -152,7 +154,7 @@ function resolvePath(url, relativeTo) {
         return resolve(attempt);
       }));
     }));
-  }));
+  })).catch(Debug.propagate("Error resolving path in config: "));
 }
 function getFile(file) {
   return new Promise((function(resolve, reject) {
@@ -162,7 +164,7 @@ function getFile(file) {
       else
         return resolve(data);
     }));
-  }));
+  })).catch(Debug.propagate("Error getting file in config: "));
 }
 function desugarRoutes(route) {
   Object.keys(route).map((function(key) {

@@ -14,7 +14,8 @@ var $__systemjs_45_basic_45_optimize__,
     $__path__,
     $__fs__,
     $__crypto__,
-    $__config__;
+    $__config__,
+    $__debug__;
 var optimize = ($__systemjs_45_basic_45_optimize__ = require("systemjs-basic-optimize"), $__systemjs_45_basic_45_optimize__ && $__systemjs_45_basic_45_optimize__.__esModule && $__systemjs_45_basic_45_optimize__ || {default: $__systemjs_45_basic_45_optimize__}).default;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
@@ -22,6 +23,7 @@ var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $_
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
 var crypto = ($__crypto__ = require("crypto"), $__crypto__ && $__crypto__.__esModule && $__crypto__ || {default: $__crypto__}).default;
 var Config = ($__config__ = require("./config"), $__config__ && $__config__.__esModule && $__config__ || {default: $__config__});
+var Debug = ($__debug__ = require("./debug"), $__debug__ && $__debug__.__esModule && $__debug__ || {default: $__debug__});
 function build(zygo) {
   return getPageObjects(zygo.routes).then(optimize).then((function(bundles) {
     return _build(bundles, zygo);
@@ -105,7 +107,7 @@ function getPageObjects(routes) {
     }));
   })).then((function() {
     return pages;
-  }));
+  })).catch(Debug.propagate("Error in getPageObjects(): "));
 }
 function traverse(route, path, callback) {
   return callback(path, route).then((function() {
@@ -114,6 +116,6 @@ function traverse(route, path, callback) {
     })).map((function(key) {
       return traverse(route[key], path + key, callback);
     })));
-  }));
+  })).catch(Debug.propagate("Error traversing routes: "));
 }
 //# sourceURL=build.js

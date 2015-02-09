@@ -20,7 +20,8 @@ var $__react__,
     $__fs__,
     $__path__,
     $__handlebars__,
-    $__routes__;
+    $__routes__,
+    $__debug__;
 var React = ($__react__ = require("react"), $__react__ && $__react__.__esModule && $__react__ || {default: $__react__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
@@ -28,11 +29,12 @@ var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var Handlebars = ($__handlebars__ = require("handlebars"), $__handlebars__ && $__handlebars__.__esModule && $__handlebars__ || {default: $__handlebars__}).default;
 var Routes = ($__routes__ = require("./routes"), $__routes__ && $__routes__.__esModule && $__routes__ || {default: $__routes__});
+var Debug = ($__debug__ = require("./debug"), $__debug__ && $__debug__.__esModule && $__debug__ || {default: $__debug__});
 function renderComponent(path, state) {
   return jspm.import(path).then((function(componentModule) {
     var element = React.createElement(componentModule.default, state);
     return _renderComponent(element, [path]);
-  }));
+  })).catch(Debug.propagate("Error rendering component: "));
 }
 function _renderComponent(component) {
   var modulePaths = arguments[1] !== (void 0) ? arguments[1] : [];
@@ -60,7 +62,7 @@ function traceAllCss(modulePaths) {
     return traces.filter((function(a, i) {
       return traces.indexOf(a) === i;
     }));
-  }));
+  })).catch(Debug.propagate("Error tracing css: "));
 }
 function traceCss(modulePath) {
   return builder.trace(modulePath).then((function(trace) {
@@ -104,7 +106,7 @@ function renderRoutes(routes, context) {
     renderObject.context = context;
     renderObject.routes = routes;
     return renderObject;
-  }));
+  })).catch(Debug.propagate("Error rendering routes: "));
 }
 function renderPage(renderObject, zygo) {
   return runSerialize(renderObject.routes, renderObject.context).then((function() {
@@ -123,7 +125,7 @@ function renderPage(renderObject, zygo) {
     };
     var template = Handlebars.compile(zygo.config.template);
     return template(templateData);
-  }));
+  })).catch(Debug.propagate("Error rendering page: "));
 }
 function runSerialize(routes, context) {
   var handlers = [];
@@ -136,7 +138,7 @@ function runSerialize(routes, context) {
   function getHandler(route, i) {
     Routes.getHandler(route).then((function(handler) {
       return handlers[i] = handler ? handler : null;
-    }));
+    })).catch(Debug.propagate("Error getting handler in runSerialize(): "));
   }
 }
 function getVisibleBundles(routes, zygo) {

@@ -9,12 +9,14 @@ var $__mime__,
     $__http__,
     $__path__,
     $__fs__,
-    $__jspm__;
+    $__jspm__,
+    $__debug__;
 var mime = ($__mime__ = require("mime"), $__mime__ && $__mime__.__esModule && $__mime__ || {default: $__mime__}).default;
 var http = ($__http__ = require("http"), $__http__ && $__http__.__esModule && $__http__ || {default: $__http__}).default;
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
 var fs = ($__fs__ = require("fs"), $__fs__ && $__fs__.__esModule && $__fs__ || {default: $__fs__}).default;
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
+var Debug = ($__debug__ = require("./debug"), $__debug__ && $__debug__.__esModule && $__debug__ || {default: $__debug__});
 function createServer(zygo) {
   var server = http.createServer();
   server._zygo = zygo;
@@ -26,7 +28,7 @@ function createServer(zygo) {
       return handleRequest.call(server, req, res, zygo);
     }));
     return server;
-  }));
+  })).catch(Debug.propagate("Error creating server: "));
 }
 function serveStatic(req, res, next) {
   var staticPath = path.join(this._zygo.baseURL, req.url);
@@ -48,6 +50,7 @@ function serveRoutes(req, res, next) {
     res.writeHead(404, {'Content-Type': 'text/plain'});
     res.write("404 not found");
     res.end();
+    throw error;
   }));
 }
 function handleRequest(req, res, zygo) {
@@ -70,6 +73,6 @@ function loadMiddleware(middleware) {
     return jspm.import(modulePath).then((function(module) {
       return module.middleware;
     }));
-  })));
+  }))).catch(Debug.propagate("Error loading server middleware: "));
 }
 //# sourceURL=server.js

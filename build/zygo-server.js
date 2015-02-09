@@ -10,6 +10,7 @@ var $__config__,
     $__build__,
     $__routes__,
     $__server__,
+    $__debug__,
     $__jspm__,
     $__systemjs_45_builder__,
     $__path__,
@@ -20,6 +21,7 @@ var Render = ($__render__ = require("./render"), $__render__ && $__render__.__es
 var Build = ($__build__ = require("./build"), $__build__ && $__build__.__esModule && $__build__ || {default: $__build__});
 var Routes = ($__routes__ = require("./routes"), $__routes__ && $__routes__.__esModule && $__routes__ || {default: $__routes__});
 var Server = ($__server__ = require("./server"), $__server__ && $__server__.__esModule && $__server__ || {default: $__server__});
+var Debug = ($__debug__ = require("./debug"), $__debug__ && $__debug__.__esModule && $__debug__ || {default: $__debug__});
 var jspm = ($__jspm__ = require("jspm"), $__jspm__ && $__jspm__.__esModule && $__jspm__ || {default: $__jspm__}).default;
 var builder = ($__systemjs_45_builder__ = require("systemjs-builder"), $__systemjs_45_builder__ && $__systemjs_45_builder__.__esModule && $__systemjs_45_builder__ || {default: $__systemjs_45_builder__}).default;
 var path = ($__path__ = require("path"), $__path__ && $__path__.__esModule && $__path__ || {default: $__path__}).default;
@@ -49,14 +51,14 @@ var Zygo = function Zygo(configFile) {
         return module.default;
       })).then(Config.desugarRoutes).then((function(routes) {
         return $__5.routes = routes;
-      }));
+      })).catch(Debug.propagate("Error configuring jspm: "));
     }));
   },
   loadConfig: function() {
     var $__5 = this;
     return Config.parse(this.configFile).then((function(config) {
       $__5.config = config;
-    }));
+    })).catch(Debug.propagate("Error loading config: "));
   },
   createServer: function(port) {
     var $__5 = this;
@@ -64,13 +66,17 @@ var Zygo = function Zygo(configFile) {
       return Server.createServer($__5);
     })).then((function(server) {
       return server.listen(port || $__5.config.port);
-    }));
+    })).catch(Debug.propagate("Error creating server: "));
   },
   bundle: function() {
-    return Build.build(this).then(this.loadConfig.bind(this));
+    return Build.build(this).then(this.loadConfig.bind(this)).catch(Debug.propagate("Error bundling app: "));
   },
   unbundle: function() {
-    return Build.unbuild(this).then(this.loadConfig.bind(this));
+    return Build.unbuild(this).then(this.loadConfig.bind(this)).catch(Debug.propagate("Error unbundling app: "));
+  },
+  setDebugMode: function() {
+    var mode = arguments[0] !== (void 0) ? arguments[0] : true;
+    Debug.mode.debugMode = mode;
   },
   route: function(path, headers, requestMethod) {
     var $__5 = this;
@@ -105,7 +111,7 @@ var Zygo = function Zygo(configFile) {
       if (error instanceof Routes.RouteRedirect)
         return $__5.route(error.redirect, headers, requestMethod);
       else
-        throw error;
+        return Debug.propagate("Error in route(): ")(error);
     }));
   }
 }, {}, EventEmitter);
