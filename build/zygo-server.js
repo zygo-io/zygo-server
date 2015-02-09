@@ -42,6 +42,8 @@ var Zygo = function Zygo(configFile) {
       })).then((function() {
         return builder.config({baseURL: 'file:' + $__5.baseURL});
       })).then((function() {
+        return global.System = builder.loader;
+      })).then((function() {
         return jspm.import($__5.config.routes);
       })).then((function(module) {
         return module.default;

@@ -30,7 +30,7 @@
     "mime": "^1.2.11",
     "react": "^0.12.2",
     "systemjs-basic-optimize": "^1.2.0",
-    "systemjs-builder": "^0.5.2",
+    "systemjs-builder": "^0.7.2",
     "traceur-runtime": "0.0.59",
     "url-pattern": "^0.6.0"
   }
