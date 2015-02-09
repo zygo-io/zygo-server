@@ -11,7 +11,7 @@ var routes = [
 ];
 
 var context = {
-  loadingRequest: {
+  loadRoute: {
     path: '/fake/path'
   }
 };
