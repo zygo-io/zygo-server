@@ -1,6 +1,6 @@
 {
   "name": "zygo-server",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "The server side of the zygo mini-framework.",
   "main": "index.js",
   "scripts": {
@@ -26,11 +26,11 @@
   },
   "dependencies": {
     "handlebars": "^2.0.0",
-    "jspm": "^0.11",
+    "jspm": "^0.13.1",
     "mime": "^1.2.11",
     "react": "^0.12.2",
     "systemjs-basic-optimize": "^1.2.0",
-    "systemjs-builder": "^0.7.2",
+    "systemjs-builder": "^0.7.3",
     "traceur-runtime": "0.0.59",
     "url-pattern": "^0.6.0"
   }

@@ -50,7 +50,7 @@ function _renderComponent(component) {
     return result.component = render;
   })).then((function() {
     return result;
-  }));
+  })).catch(Debug.propagate("Error in _renderComponent(): "));
 }
 function traceAllCss(modulePaths) {
   var cssTrace = [];

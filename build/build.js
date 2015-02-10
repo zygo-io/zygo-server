@@ -27,13 +27,13 @@ var Debug = ($__debug__ = require("./debug"), $__debug__ && $__debug__.__esModul
 function build(zygo) {
   return getPageObjects(zygo.routes).then(optimize).then((function(bundles) {
     return _build(bundles, zygo);
-  }));
+  })).catch(Debug.propagate("Error building bundles: "));
 }
 function _build(bundles, zygo) {
   if (!zygo.config.buildDir)
     throw new Error("buildDir has not been set in zygo.json.");
   var bundlesJSON = {};
-  bundles.map((function(bundle) {
+  return Promise.all(bundles.map((function(bundle) {
     var bundleHash = crypto.createHash('md5');
     Object.keys(bundle.tree).map((function(key) {
       return bundleHash.update(bundle.tree[key].source);
@@ -41,19 +41,21 @@ function _build(bundles, zygo) {
     bundleHash = bundleHash.digest('hex');
     var bundlePath = path.relative(zygo.baseURL, path.join(zygo.config.buildDir, bundleHash));
     var filePath = path.join(zygo.baseURL, bundlePath) + '.js';
-    builder.buildTree(bundle.tree, filePath);
-    bundlesJSON[bundlePath] = {
-      routes: bundle.routes,
-      modules: Object.keys(bundle.tree)
-    };
-  }));
-  return new Promise((function(resolve, reject) {
-    var bundlesPath = path.join(zygo.config.buildDir, 'bundles.json');
-    fs.writeFile(bundlesPath, JSON.stringify(bundlesJSON), (function(error) {
-      if (error)
-        return reject(error);
-      zygo.config.bundlesJSON = bundlesPath;
-      return resolve(Config.save(zygo.config, {bundlesJSON: {type: 'path'}}));
+    return builder.buildTree(bundle.tree, filePath).then((function() {
+      bundlesJSON[bundlePath] = {
+        routes: bundle.routes,
+        modules: Object.keys(bundle.tree)
+      };
+    }));
+  }))).then((function() {
+    return new Promise((function(resolve, reject) {
+      var bundlesPath = path.join(zygo.config.buildDir, 'bundles.json');
+      fs.writeFile(bundlesPath, JSON.stringify(bundlesJSON), (function(error) {
+        if (error)
+          return reject(error);
+        zygo.config.bundlesJSON = bundlesPath;
+        return resolve(Config.save(zygo.config, {bundlesJSON: {type: 'path'}}));
+      }));
     }));
   }));
 }
