@@ -119,7 +119,7 @@ function renderPage(renderObject, zygo) {
       routes: JSON.stringify(zygo.routes),
       context: JSON.stringify(renderObject.context || {}),
       path: renderObject.context.curRoute.path,
-      meta: renderObject.context.meta,
+      meta: renderObject.context.templateMeta,
       baseURL: 'http://' + renderObject.context.curRoute.headers.host,
       addLinkHandlers: zygo.config.anchors
     };

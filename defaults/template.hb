@@ -15,7 +15,7 @@
     <title> {{{meta.title}}} </title>
   </head>
 
-  <body>
+  <body className="{{{meta.bodyClass}}}">
     <div id="__zygo-body-container__">
       {{{component}}}
     </div>
