@@ -205,14 +205,16 @@ function desugarRoutes(route) {
   }));
 }
 function flatten(route) {
+  var result = {};
   Object.keys(route).map((function(key) {
     if (key === '/' || key === '') {
       Object.keys(route[key]).map((function(innerKey) {
-        route[innerKey] = route[key][innerKey];
+        result[innerKey] = route[key][innerKey];
       }));
-      route[key] = undefined;
+    } else {
+      result[key] = route[key];
     }
   }));
-  return route;
+  return result;
 }
 //# sourceURL=config.js
