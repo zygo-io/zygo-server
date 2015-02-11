@@ -17,7 +17,7 @@
 
 {{#if meta.bodyClass}}
   <body class="{{{meta.bodyClass}}}">
-{{#else}}
+{{else}}
   <body>
 {{/if}}
     <div id="__zygo-body-container__">

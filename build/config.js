@@ -201,7 +201,7 @@ function desugarRoutes(route) {
       return desugarRoutes(route[key], parent);
     }
   }))).then((function() {
-    return flatten(route);
+    return route = flatten(route);
   }));
 }
 function flatten(route) {

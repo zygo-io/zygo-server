@@ -49,8 +49,6 @@ var Zygo = function Zygo(configFile) {
         return Config.desugarRoutes($__5.config.routes);
       })).then((function(routes) {
         return $__5.routes = routes;
-      })).then((function() {
-        return console.log($__5.routes);
       })).catch(Debug.propagate("Error configuring jspm: "));
     }));
   },
