@@ -75,6 +75,8 @@ function runHandlers(routes) {
     })).then((function(module) {
       return module ? module.handler(context) : null;
     })).then((function(result) {
+      if (result === false)
+        throw new RouteRedirect('default');
       if (result && result.redirect)
         throw new RouteRedirect(result.redirect);
     }));

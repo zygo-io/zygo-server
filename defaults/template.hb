@@ -15,7 +15,11 @@
     <title> {{{meta.title}}} </title>
   </head>
 
-  <body className="{{{meta.bodyClass}}}">
+{{#if meta.bodyClass}}
+  <body class="{{{meta.bodyClass}}}">
+{{#else}}
+  <body>
+{{/if}}
     <div id="__zygo-body-container__">
       {{{component}}}
     </div>

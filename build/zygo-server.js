@@ -46,11 +46,11 @@ var Zygo = function Zygo(configFile) {
       })).then((function() {
         return global.System = builder.loader;
       })).then((function() {
-        return jspm.import($__5.config.routes);
-      })).then((function(module) {
-        return module.default;
-      })).then(Config.desugarRoutes).then((function(routes) {
+        return Config.desugarRoutes($__5.config.routes);
+      })).then((function(routes) {
         return $__5.routes = routes;
+      })).then((function() {
+        return console.log($__5.routes);
       })).catch(Debug.propagate("Error configuring jspm: "));
     }));
   },
@@ -84,7 +84,7 @@ var Zygo = function Zygo(configFile) {
     return Promise.resolve().then((function() {
       match = Routes.match(path, $__5.routes);
       if (!match)
-        throw new Error("No default or matching route for path: " + path);
+        throw ("No default or matching route for path: " + path);
       var context = {
         meta: {},
         loadRoute: {

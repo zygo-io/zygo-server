@@ -39,7 +39,8 @@ var zygoParseSpec = {
   },
   routes: {
     required: true,
-    default: './routes'
+    type: 'json',
+    default: './routes.json'
   }
 };
 var zygoSaveSpec = {};
@@ -175,13 +176,41 @@ function getFile(file) {
   })).catch(Debug.propagate("Error getting file in config: "));
 }
 function desugarRoutes(route) {
-  Object.keys(route).map((function(key) {
+  var parent = arguments[1] !== (void 0) ? arguments[1] : null;
+  var result = {};
+  return Promise.all(Object.keys(route).map((function(key) {
     if (typeof route[key] === "string") {
       if (key[0] === '/') {
-        route[key] = {component: route[key]};
+        return jspm.normalize(route[key], parent).then((function(jspmPath) {
+          return jspm.locate(route[key], parent).then((function(nodePath) {
+            if (nodePath.match(/\.json\.js$/)) {
+              nodePath = nodePath.replace(".json.js", ".json");
+              route[key] = require(nodePath);
+              return desugarRoutes(route[key], jspmPath);
+            } else {
+              route[key] = {component: jspmPath};
+            }
+          }));
+        }));
+      } else {
+        return jspm.normalize(route[key], parent).then((function(routePath) {
+          return route[key] = routePath;
+        }));
       }
     } else {
-      desugarRoutes(route[key]);
+      return desugarRoutes(route[key], parent);
+    }
+  }))).then((function() {
+    return flatten(route);
+  }));
+}
+function flatten(route) {
+  Object.keys(route).map((function(key) {
+    if (key === '/' || key === '') {
+      Object.keys(route[key]).map((function(innerKey) {
+        route[innerKey] = route[key][innerKey];
+      }));
+      route[key] = undefined;
     }
   }));
   return route;
