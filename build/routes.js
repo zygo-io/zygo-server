@@ -29,43 +29,45 @@ var RouteRedirect = function RouteRedirect(redirect) {
 };
 ($traceurRuntime.createClass)(RouteRedirect, {}, {}, Error);
 function match(path, routes) {
-  var result = _match(path, '', routes);
-  if (!result) {
+  var result = [];
+  _match(path, '', routes);
+  if (!result[0]) {
     if (!routes.default)
       return null;
     result = [routes.default];
   }
+  result = result[0].reverse();
   var options = result[0].options;
   delete result[0].options;
   return {
     options: options,
     routes: result.reverse()
   };
-}
-function _match(path, curPattern, curRoute) {
-  var childRoutes = {};
-  var otherParams = {_path: curPattern};
-  Object.keys(curRoute).map((function(key) {
-    if (key[0] === '/')
-      childRoutes[key] = curRoute[key];
-    else
-      otherParams[key] = curRoute[key];
-  }));
-  var match = pattern.newPattern(curPattern || '/').match(path);
-  if (match !== null) {
-    otherParams.options = match;
-    return [otherParams];
-  }
-  if (pattern.newPattern(curPattern + '(.*)').match(path)) {
-    Object.keys(childRoutes).map((function(key) {
-      var result = _match(path, curPattern + key, childRoutes[key]);
-      if (result) {
-        result.push(otherParams);
-        match = result;
-      }
+  function _match(path, curPattern, curRoute) {
+    var curParams = arguments[3] !== (void 0) ? arguments[3] : [];
+    var childRoutes = {};
+    var otherParams = {_path: curPattern};
+    Object.keys(curRoute).map((function(key) {
+      if (key[0] === '/')
+        childRoutes[key] = curRoute[key];
+      else
+        otherParams[key] = curRoute[key];
     }));
+    var match = pattern.newPattern(curPattern || '/').match(path);
+    if (match !== null) {
+      otherParams.options = match;
+      curParams.push(otherParams);
+      return result.push(curParams);
+    }
+    if (pattern.newPattern(curPattern + '(.*)').match(path)) {
+      curParams.push(otherParams);
+      Object.keys(childRoutes).map((function(key) {
+        childRoutes[key].map((function(route) {
+          _match(path, curPattern + key, route, curParams.slice());
+        }));
+      }));
+    }
   }
-  return match;
 }
 function runHandlers(routes) {
   var context = arguments[1] !== (void 0) ? arguments[1] : {};
@@ -90,16 +92,9 @@ function getHandler(route) {
   var baseURL = builder.loader.baseURL.substr('file:'.length);
   return jspm.import(route.component).then((function(module) {
     return Promise.resolve().then((function() {
-      if (module.default.serverHandler) {
-        return jspm.normalize(module.default.serverHandler, route.component).then((function(normalized) {
-          try {
-            return require(path.resolve(baseURL, normalized));
-          } catch (_) {
-            return jspm.import(normalized);
-          }
-        }));
-      } else
-        return null;
+      if (module.default.serverHandler)
+        return normalizeAndImport(module.default.serverHandler);
+      return null;
     })).then((function(handler) {
       if (handler)
         return handler;

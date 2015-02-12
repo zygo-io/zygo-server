@@ -189,9 +189,15 @@ function desugarRoutes(route) {
 function desugarKeyValue(key, value, parent) {
   if (key === "mixins")
     return handleMixins(key, value);
-  if (typeof value === "string")
+  if (key === "component")
     return handleString(key, value);
-  return desugarRoutes(value, parent);
+  if (!(value instanceof Array))
+    value = [value];
+  return Promise.all(value.map((function(val) {
+    if (typeof val === "string")
+      return handleString(key, val);
+    return desugarRoutes(val, parent);
+  })));
   function handleMixins(key, value) {
     if (typeof value === "string")
       value = [value];
