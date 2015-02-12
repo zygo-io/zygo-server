@@ -59,7 +59,7 @@ function handleRequest(req, res, zygo) {
   function next(index) {
     return (function() {
       if (index < handlers.length - 1)
-        handlers[index + 1](req, res, next(index + 1), zygo);
+        handlers[index + 1](req, res, next(index + 1), zygo.config);
     });
   }
 }

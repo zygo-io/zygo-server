@@ -87,11 +87,13 @@ var Zygo = function Zygo(configFile) {
         throw ("No default or matching route for path: " + path);
       var context = {
         meta: {},
-        loadRoute: {
-          routes: match.routes,
-          path: path,
+        request: {
           headers: headers,
           method: requestMethod
+        },
+        loadRoute: {
+          path: path,
+          routes: match.routes
         }
       };
       Object.keys(match.options).map((function(key) {

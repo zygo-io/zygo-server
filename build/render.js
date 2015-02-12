@@ -103,6 +103,7 @@ function renderRoutes(routes, context) {
   })).then((function(renderObject) {
     renderObject.context = context;
     renderObject.routes = routes;
+    renderObject.host = context.request.headers.host;
     return renderObject;
   })).catch(Debug.propagate("Error rendering routes: "));
 }
@@ -118,7 +119,7 @@ function renderPage(renderObject, zygo) {
       context: JSON.stringify(renderObject.context || {}),
       path: renderObject.context.curRoute.path,
       meta: renderObject.context.templateMeta,
-      baseURL: 'http://' + renderObject.context.curRoute.headers.host,
+      baseURL: 'http://' + renderObject.host,
       addLinkHandlers: zygo.config.anchors
     };
     var template = Handlebars.compile(zygo.config.template);
@@ -126,6 +127,7 @@ function renderPage(renderObject, zygo) {
   })).catch(Debug.propagate("Error rendering page: "));
 }
 function runSerialize(routes, context) {
+  delete context.request;
   var handlers = [];
   return Promise.all(routes.map(getHandler)).then((function() {
     handlers.map((function(handler, i) {

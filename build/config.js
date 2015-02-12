@@ -223,7 +223,6 @@ function desugarKeyValue(key, value, parent) {
   }
 }
 function flattenMixins(route) {
-  console.log(route);
   var result = {};
   Object.keys(route).map((function(key) {
     if (key === 'mixins') {
@@ -237,7 +236,6 @@ function flattenMixins(route) {
       result[key] = route[key];
     }
   }));
-  console.log(result, "asdfasdfasdf");
   return result;
 }
 //# sourceURL=config.js
