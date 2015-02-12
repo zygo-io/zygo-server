@@ -31,18 +31,7 @@ var RouteRedirect = function RouteRedirect(redirect) {
 function match(path, routes) {
   var result = [];
   _match(path, '', routes);
-  if (!result[0]) {
-    if (!routes.default)
-      return null;
-    result = [routes.default];
-  }
-  result = result[0].reverse();
-  var options = result[0].options;
-  delete result[0].options;
-  return {
-    options: options,
-    routes: result.reverse()
-  };
+  return result;
   function _match(path, curPattern, curRoute) {
     var curParams = arguments[3] !== (void 0) ? arguments[3] : [];
     var childRoutes = {};
@@ -55,9 +44,11 @@ function match(path, routes) {
     }));
     var match = pattern.newPattern(curPattern || '/').match(path);
     if (match !== null) {
-      otherParams.options = match;
       curParams.push(otherParams);
-      return result.push(curParams);
+      return result.push({
+        options: match,
+        routes: curParams
+      });
     }
     if (pattern.newPattern(curPattern + '(.*)').match(path)) {
       curParams.push(otherParams);
@@ -78,7 +69,7 @@ function runHandlers(routes) {
       return module ? module.default(context) : null;
     })).then((function(result) {
       if (result === false)
-        throw new RouteRedirect('default');
+        throw new RouteRedirect(false);
       if (result && result.redirect)
         throw new RouteRedirect(result.redirect);
     }));

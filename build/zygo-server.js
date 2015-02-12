@@ -79,20 +79,24 @@ var Zygo = function Zygo(configFile) {
     Debug.mode.debugMode = mode;
   },
   route: function(path, headers, requestMethod) {
+    var matches = Routes.match(path, this.routes);
+    if (!matches)
+      throw ("No default or matching route for path: " + path);
+    var context = {
+      meta: {},
+      request: {
+        headers: headers,
+        method: requestMethod
+      },
+      loadRoute: {path: path}
+    };
+    var matchIndex = 0;
+    return this._route(matches, matchIndex, context);
+  },
+  _route: function(matches, matchIndex, context) {
     var $__5 = this;
-    var match;
+    var match = matches[matchIndex];
     return Promise.resolve().then((function() {
-      match = Routes.match(path, $__5.routes);
-      if (!match)
-        throw ("No default or matching route for path: " + path);
-      var context = {
-        meta: {},
-        request: {
-          headers: headers,
-          method: requestMethod
-        },
-        loadRoute: {path: path}
-      };
       Object.keys(match.options).map((function(key) {
         if (key == 'path' || key == 'routes' || key == 'headers' || key == 'method')
           throw new Error("Invalid option id in route path: :" + key);
@@ -111,9 +115,15 @@ var Zygo = function Zygo(configFile) {
     })).then((function(renderObject) {
       return Render.renderPage(renderObject, $__5);
     })).catch((function(error) {
-      if (error instanceof Routes.RouteRedirect)
-        return $__5.route(error.redirect, headers, requestMethod);
-      else
+      if (error instanceof Routes.RouteRedirect) {
+        if (error.redirect === false) {
+          matchIndex++;
+          if (matches[matchIndex])
+            return $__5._route(matches, matchIndex, context);
+          return $__5.route('default', context.headers, context.requestMethod);
+        }
+        return $__5.route(error.redirect, context.headers, context.requestMethod);
+      } else
         return Debug.propagate("Error in route(): ")(error);
     }));
   }
