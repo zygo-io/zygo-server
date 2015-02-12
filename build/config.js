@@ -179,37 +179,56 @@ function desugarRoutes(route) {
   var parent = arguments[1] !== (void 0) ? arguments[1] : null;
   var result = {};
   return Promise.all(Object.keys(route).map((function(key) {
-    if (typeof route[key] === "string") {
-      if (key[0] === '/') {
-        return jspm.normalize(route[key], parent).then((function(jspmPath) {
-          return jspm.locate(route[key], parent).then((function(nodePath) {
-            if (nodePath.match(/\.json\.js$/)) {
-              nodePath = nodePath.replace(".json.js", ".json");
-              route[key] = require(nodePath);
-              return desugarRoutes(route[key], jspmPath);
-            } else {
-              route[key] = {component: jspmPath};
-            }
-          }));
-        }));
-      } else {
-        return jspm.normalize(route[key], parent).then((function(routePath) {
-          return route[key] = routePath;
-        }));
-      }
-    } else {
-      return desugarRoutes(route[key], parent);
-    }
+    return desugarKeyValue(key, route[key]).then((function(desugaredRoute) {
+      return result[key] = desugaredRoute;
+    }));
   }))).then((function() {
-    return route = flatten(route);
+    return flattenMixins(result);
   }));
 }
-function flatten(route) {
+function desugarKeyValue(key, value, parent) {
+  if (key === "mixins")
+    return handleMixins(key, value);
+  if (typeof value === "string")
+    return handleString(key, value);
+  return desugarRoutes(value, parent);
+  function handleMixins(key, value) {
+    if (typeof value === "string")
+      value = [value];
+    return Promise.all(value.map((function(modulePath) {
+      return handleModule(modulePath);
+    })));
+  }
+  function handleString(key, value) {
+    if (key[0] === '/')
+      return handleModule(value);
+    return handleComponent(value);
+  }
+  function handleComponent(value) {
+    return jspm.normalize(value, parent).then((function(routePath) {
+      return {component: routePath};
+    }));
+  }
+  function handleModule(value) {
+    return jspm.normalize(value, parent).then((function(jspmPath) {
+      return jspm.locate(value, parent).then((function(nodePath) {
+        if (nodePath.match(/\.json\.js$/)) {
+          nodePath = nodePath.replace(".json.js", ".json");
+          var result = require(nodePath);
+          return desugarRoutes(result, jspmPath);
+        } else
+          return handleComponent(value);
+      }));
+    }));
+  }
+}
+function flattenMixins(route) {
   var result = {};
   Object.keys(route).map((function(key) {
-    if (key === '/' || key === '') {
+    if (key === '/') {
       Object.keys(route[key]).map((function(innerKey) {
-        result[innerKey] = route[key][innerKey];
+        if (!result[innerKey])
+          result[innerKey] = route[key][innerKey];
       }));
     } else {
       result[key] = route[key];
