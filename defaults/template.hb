@@ -20,7 +20,7 @@
 {{else}}
   <body>
 {{/if}}
-    <div id="__zygo-body-container__">
+    <div id="__zygo-container__">
       {{{component}}}
     </div>
   </body>
@@ -35,13 +35,14 @@
 
     zygo._setContext({{{context}}});
     zygo._setRoutes({{{routes}}});
+    zygo._setCurrentRoutes({{{matchedRoutes}}});
 
 {{#if addLinkHandlers}}
     zygo._addLinkHandlers();
 {{/if}}
 
-    zygo.setVisibleBundles(zygo.context.curRoute.routes);
-    zygo._deserializeContext(zygo.context.curRoute.routes);
+    zygo.setVisibleBundles(zygo.currentRoutes);
+    zygo._deserializeContext(zygo.currentRoutes);
     zygo.setMetadata();
     zygo.refresh();
   });

@@ -103,11 +103,12 @@ function renderRoutes(routes, context) {
   })).then((function(renderObject) {
     renderObject.context = context;
     renderObject.routes = routes;
-    renderObject.host = context.request.headers.host;
     return renderObject;
   })).catch(Debug.propagate("Error rendering routes: "));
 }
 function renderPage(renderObject, zygo) {
+  var host = renderObject.context.request.headers.host;
+  var templateMeta = renderObject.context.templateMeta;
   return runSerialize(renderObject.routes, renderObject.context).then((function() {
     var includeBundles = zygo.config.bundlesJSON && zygo.config.env === 'production';
     var templateData = {
@@ -116,10 +117,11 @@ function renderPage(renderObject, zygo) {
       visibleBundles: includeBundles ? getVisibleBundles(renderObject.routes, zygo) : null,
       component: renderObject.component,
       routes: JSON.stringify(zygo.routes),
+      matchedRoutes: JSON.stringify(renderObject.routes),
       context: JSON.stringify(renderObject.context || {}),
       path: renderObject.context.curRoute.path,
-      meta: renderObject.context.templateMeta,
-      baseURL: 'http://' + renderObject.host,
+      meta: templateMeta,
+      baseURL: 'http://' + host,
       addLinkHandlers: zygo.config.anchors
     };
     var template = Handlebars.compile(zygo.config.template);
@@ -128,6 +130,7 @@ function renderPage(renderObject, zygo) {
 }
 function runSerialize(routes, context) {
   delete context.request;
+  delete context.templateMeta;
   var handlers = [];
   return Promise.all(routes.map(getHandler)).then((function() {
     handlers.map((function(handler, i) {

@@ -91,10 +91,7 @@ var Zygo = function Zygo(configFile) {
           headers: headers,
           method: requestMethod
         },
-        loadRoute: {
-          path: path,
-          routes: match.routes
-        }
+        loadRoute: {path: path}
       };
       Object.keys(match.options).map((function(key) {
         if (key == 'path' || key == 'routes' || key == 'headers' || key == 'method')
