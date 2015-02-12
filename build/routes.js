@@ -31,6 +31,16 @@ var RouteRedirect = function RouteRedirect(redirect) {
 function match(path, routes) {
   var result = [];
   _match(path, '', routes);
+  if (routes.default) {
+    result.push({
+      options: {},
+      routes: [routes.default]
+    });
+  }
+  result.push({
+    options: {},
+    routes: [{component: "zygo/lib/default-component.jsx!"}]
+  });
   return result;
   function _match(path, curPattern, curRoute) {
     var curParams = arguments[3] !== (void 0) ? arguments[3] : [];

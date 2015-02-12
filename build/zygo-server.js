@@ -80,8 +80,6 @@ var Zygo = function Zygo(configFile) {
   },
   route: function(path, headers, requestMethod) {
     var matches = Routes.match(path, this.routes);
-    if (!matches)
-      throw ("No default or matching route for path: " + path);
     var context = {
       meta: {},
       request: {
