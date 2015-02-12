@@ -104,6 +104,10 @@ var Zygo = function Zygo(configFile) {
       }));
       return Routes.runHandlers(match.routes, context);
     })).then((function(context) {
+      context.curRoute = context.loadRoute;
+      context.loadRoute = undefined;
+      return context;
+    })).then((function(context) {
       return Render.renderRoutes(match.routes, context);
     })).then((function(renderObject) {
       return Render.renderPage(renderObject, $__5);

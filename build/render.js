@@ -46,8 +46,8 @@ function _renderComponent(component) {
     return result.cssTrace = cssTrace;
   })).then((function() {
     return React.renderToString(component);
-  })).then((function(render) {
-    return result.component = render;
+  })).then((function(rendered) {
+    return result.component = rendered;
   })).then((function() {
     return result;
   })).catch(Debug.propagate("Error in _renderComponent(): "));
@@ -101,8 +101,6 @@ function renderRoutes(routes, context) {
     routes.reverse();
     return _renderComponent(component, modules);
   })).then((function(renderObject) {
-    context.curRoute = context.loadRoute;
-    delete context.loadRoute;
     renderObject.context = context;
     renderObject.routes = routes;
     return renderObject;

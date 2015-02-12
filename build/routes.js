@@ -73,7 +73,7 @@ function runHandlers(routes) {
     return chain.then((function() {
       return getHandler(route);
     })).then((function(module) {
-      return module ? module.handler(context) : null;
+      return module ? module.default(context) : null;
     })).then((function(result) {
       if (result === false)
         throw new RouteRedirect('default');
@@ -109,6 +109,8 @@ function getHandler(route) {
     }));
   })).catch(Debug.propagate("Error loading handlers in routes.js: "));
   function normalizeAndImport(handler) {
+    if (typeof handler === "function")
+      return {default: handler};
     return jspm.normalize(handler, route.component).then((function(normalized) {
       return jspm.import(normalized);
     }));

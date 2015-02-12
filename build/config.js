@@ -205,9 +205,7 @@ function desugarKeyValue(key, value, parent) {
     return handleComponent(value);
   }
   function handleComponent(value) {
-    return jspm.normalize(value, parent).then((function(routePath) {
-      return {component: routePath};
-    }));
+    return jspm.normalize(value, parent);
   }
   function handleModule(value) {
     return jspm.normalize(value, parent).then((function(jspmPath) {
@@ -217,23 +215,29 @@ function desugarKeyValue(key, value, parent) {
           var result = require(nodePath);
           return desugarRoutes(result, jspmPath);
         } else
-          return handleComponent(value);
+          return handleComponent(value).then((function(modulePath) {
+            return {component: modulePath};
+          }));
       }));
     }));
   }
 }
 function flattenMixins(route) {
+  console.log(route);
   var result = {};
   Object.keys(route).map((function(key) {
-    if (key === '/') {
-      Object.keys(route[key]).map((function(innerKey) {
-        if (!result[innerKey])
-          result[innerKey] = route[key][innerKey];
+    if (key === 'mixins') {
+      route[key].map((function(mixin) {
+        Object.keys(mixin).map((function(innerKey) {
+          if (!result[innerKey])
+            result[innerKey] = mixin[innerKey];
+        }));
       }));
     } else {
       result[key] = route[key];
     }
   }));
+  console.log(result, "asdfasdfasdf");
   return result;
 }
 //# sourceURL=config.js
