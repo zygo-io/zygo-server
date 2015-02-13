@@ -34,13 +34,16 @@ function match(path, routes) {
   if (routes.default) {
     result.push({
       options: {},
-      routes: [routes.default]
+      routes: routes.default
     });
   }
   result.push({
     options: {},
     routes: [{component: "zygo/lib/default-component.jsx!"}]
   });
+  result.map((function(res) {
+    return console.log(res);
+  }));
   return result;
   function _match(path, curPattern, curRoute) {
     var curParams = arguments[3] !== (void 0) ? arguments[3] : [];

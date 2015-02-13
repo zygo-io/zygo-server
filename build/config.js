@@ -208,6 +208,8 @@ function desugarKeyValue(key, value, parent) {
   function handleString(key, value) {
     if (key[0] === '/')
       return handleModule(value);
+    if (key === "default")
+      return handleModule(value);
     return handleComponent(value);
   }
   function handleComponent(value) {
