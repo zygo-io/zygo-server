@@ -54,14 +54,14 @@ function match(path, routes) {
         otherParams[key] = curRoute[key];
     }));
     var match = pattern.newPattern(curPattern || '/').match(path);
-    if (match !== null) {
+    if (match !== null && Object.keys(childRoutes).length === 0) {
       curParams.push(otherParams);
       return result.push({
         options: match,
         routes: curParams
       });
     }
-    if (pattern.newPattern(curPattern + '(.*)').match(path)) {
+    if (pattern.newPattern(curPattern + '(.+)').match(path)) {
       curParams.push(otherParams);
       Object.keys(childRoutes).map((function(key) {
         childRoutes[key].map((function(route) {
