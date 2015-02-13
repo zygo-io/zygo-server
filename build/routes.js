@@ -33,6 +33,7 @@ function match(path, routes) {
   _match(path, '', routes);
   if (routes.default) {
     result.push({
+      _isDefault: true,
       options: {},
       routes: routes.default
     });
@@ -85,6 +86,8 @@ function runHandlers(routes) {
         throw new RouteRedirect(false);
       if (result && result.redirect)
         throw new RouteRedirect(result.redirect);
+      if (result && result.status)
+        throw new RouteRedirect(result);
     }));
   }), Promise.resolve()).then((function() {
     return context;

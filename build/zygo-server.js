@@ -49,8 +49,6 @@ var Zygo = function Zygo(configFile) {
         return Config.desugarRoutes($__5.config.routes);
       })).then((function(routes) {
         return $__5.routes = routes;
-      })).then((function() {
-        return console.log($__5.routes);
       })).catch(Debug.propagate("Error configuring jspm: "));
     }));
   },
@@ -119,6 +117,15 @@ var Zygo = function Zygo(configFile) {
           if (matches[matchIndex])
             return $__5._route(matches, matchIndex, context);
           return $__5.route('default', context.headers, context.requestMethod);
+        }
+        if (error.redirect.status) {
+          context.error = {
+            status: error.redirect.status,
+            message: error.redirect.message
+          };
+          if (matches[matches.length - 2] && matches[matches.length - 2]._isDefault)
+            return $__5._route(matches, matches.length - 2, context);
+          return $__5._route(matches, matches.length - 1, context);
         }
         return $__5.route(error.redirect, context.headers, context.requestMethod);
       } else
