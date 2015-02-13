@@ -71,13 +71,13 @@ function match(path, routes) {
     }
   }
 }
-function runHandlers(routes) {
-  var context = arguments[1] !== (void 0) ? arguments[1] : {};
+function runHandlers(routes, config) {
+  var context = arguments[2] !== (void 0) ? arguments[2] : {};
   return routes.reduce((function(chain, route) {
     return chain.then((function() {
       return getHandler(route);
     })).then((function(module) {
-      return module ? module.default(context) : null;
+      return module ? module.default(context, config) : null;
     })).then((function(result) {
       if (result === false)
         throw new RouteRedirect(false);

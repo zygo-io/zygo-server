@@ -101,7 +101,7 @@ var Zygo = function Zygo(configFile) {
       Object.keys($__5.config.defaultContext).map((function(key) {
         context[key] = $__5.config.defaultContext[key];
       }));
-      return Routes.runHandlers(match.routes, context);
+      return Routes.runHandlers(match.routes, $__5.config, context);
     })).then((function(context) {
       context.curRoute = context.loadRoute;
       context.loadRoute = undefined;
