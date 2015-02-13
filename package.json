@@ -26,11 +26,11 @@
   },
   "dependencies": {
     "handlebars": "^2.0.0",
-    "jspm": "^0.13.2",
+    "jspm": "^0.13.4",
     "mime": "^1.2.11",
     "react": "^0.12.2",
     "systemjs-basic-optimize": "^1.2.0",
-    "systemjs-builder": "^0.7.4",
+    "systemjs-builder": "^0.8.0",
     "traceur-runtime": "0.0.59",
     "url-pattern": "^0.6.0"
   }
