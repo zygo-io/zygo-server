@@ -55,7 +55,7 @@ function serveRoutes(req, res, next) {
 }
 function handleRequest(req, res, zygo) {
   var handlers = this._middlewares.concat(this._zygowares);
-  handlers[0](req, res, next(0), zygo);
+  handlers[0](req, res, next(0), zygo.config);
   function next(index) {
     return (function() {
       if (index < handlers.length - 1)
@@ -71,7 +71,7 @@ function loadMiddleware(middleware) {
     middleware = [middleware];
   return Promise.all(middleware.map((function(modulePath) {
     return jspm.import(modulePath).then((function(module) {
-      return module.middleware;
+      return module.default || module.middleware;
     }));
   }))).catch(Debug.propagate("Error loading server middleware: "));
 }
