@@ -36,6 +36,7 @@ var Zygo = function Zygo(configFile) {
     var $__5 = this;
     return this.loadConfig().then((function() {
       var packageDir = path.dirname($__5.config.packageJSON);
+      process.chdir(packageDir);
       jspm.setPackagePath(packageDir);
       return jspm.configureLoader().then((function(cfg) {
         return $__5.baseURL = cfg.baseURL.substr('file:'.length);
@@ -77,6 +78,12 @@ var Zygo = function Zygo(configFile) {
     Debug.mode.debugMode = mode;
   },
   route: function(path, headers, requestMethod) {
+    if (requestMethod != "GET") {
+      return new RouteRedirect({
+        status: 404,
+        message: requestMethod + " not supported"
+      });
+    }
     var matches = Routes.match(path, this.routes);
     var context = {
       meta: {},
