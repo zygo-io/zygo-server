@@ -86,7 +86,6 @@ var Zygo = function Zygo(configFile) {
     }
     var matches = Routes.match(path, this.routes);
     var context = {
-      meta: {},
       request: {
         headers: headers,
         method: requestMethod

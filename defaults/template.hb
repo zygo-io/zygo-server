@@ -6,7 +6,7 @@
 {{/each}}
 
   <head>
-    <title> {{{meta.title}}} </title>
+    <title> {{{title}}} </title>
   </head>
 
 {{#if meta.bodyClass}}
