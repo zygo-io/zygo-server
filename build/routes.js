@@ -54,7 +54,7 @@ function match(path, routes) {
         otherParams[key] = curRoute[key];
     }));
     var match = pattern.newPattern(curPattern || '/').match(path);
-    if (match !== null && Object.keys(childRoutes).length === 0) {
+    if (match !== null) {
       curParams.push(otherParams);
       return result.push({
         options: match,

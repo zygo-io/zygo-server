@@ -179,7 +179,7 @@ function desugarRoutes(route) {
   var parent = arguments[1] !== (void 0) ? arguments[1] : null;
   var result = {};
   return Promise.all(Object.keys(route).map((function(key) {
-    return desugarKeyValue(key, route[key]).then((function(desugaredRoute) {
+    return desugarKeyValue(key, route[key], parent).then((function(desugaredRoute) {
       return result[key] = desugaredRoute;
     }));
   }))).then((function() {
@@ -187,10 +187,12 @@ function desugarRoutes(route) {
   }));
 }
 function desugarKeyValue(key, value, parent) {
-  if (key === "mixins")
+  if (key === "mixin")
     return handleMixins(key, value);
   if (key === "component")
     return handleString(key, value);
+  if (key !== "default" && key[0] !== "/")
+    throw new Error("Invalid route key: " + key);
   if (!(value instanceof Array))
     value = [value];
   return Promise.all(value.map((function(val) {
@@ -233,7 +235,7 @@ function desugarKeyValue(key, value, parent) {
 function flattenMixins(route) {
   var result = {};
   Object.keys(route).map((function(key) {
-    if (key === 'mixins') {
+    if (key === 'mixin') {
       route[key].map((function(mixin) {
         Object.keys(mixin).map((function(innerKey) {
           if (!result[innerKey])
